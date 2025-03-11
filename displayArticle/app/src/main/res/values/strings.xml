@@ -10,6 +10,8 @@
     <string name="third2">A layout composable that places its children in a horizontal sequence.</string>
     <string name="fourth1">Column composable</string>
     <string name="fourth2">A layout composable that places its children in a vertical sequence.</string>
+
+
     <string name="heading">Jetpack Compose tutorial</string>
     <string name="content1">Jetpack Compose is a modern toolkit for
         building native Android UI. Compose simplifies and accelerates
