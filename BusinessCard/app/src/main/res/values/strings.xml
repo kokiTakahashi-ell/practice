@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">BusinessCard</string>
+
+    <string name="name">Koki Takahashi</string>
+    <string name="title">Android Developer Extraordinaire</string>
+    <string name="phone">+11 (123) 456 7890</string>
+    <string name="email">koki.takahashi@link-u.co.jp</string>
+    <string name="website">"@AndroidDev"</string>
 </resources>
