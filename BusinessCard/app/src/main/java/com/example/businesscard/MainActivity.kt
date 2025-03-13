@@ -132,7 +132,7 @@ private fun Logo (modifier: Modifier = Modifier){
         Text(
             text = stringResource(R.string.name),
             fontWeight = FontWeight.Bold,
-            fontSize = 40.sp,
+            fontSize = 64.sp,
             textAlign = TextAlign.Center,
             maxLines = 1,
             modifier = modifier
@@ -149,13 +149,6 @@ private fun Logo (modifier: Modifier = Modifier){
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
 @Preview(showBackground = true)
 @Composable
