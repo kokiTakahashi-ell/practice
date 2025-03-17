@@ -1,3 +1,23 @@
 <resources>
     <string name="app_name">WorkSpace</string>
+
+    <string name="art_title_oran">A Family beside the Tomb of Prince William i in the Nieuwe Kerk, Delft</string>
+    <string name="art_author_oran">Dirck van Delen</string>
+    <string name="art_year_oran">1645</string>
+
+    <string name="art_title_joseph">Cavern, near Naples</string>
+    <string name="art_author_joseph">Joseph Wright</string>
+    <string name="art_year_joseph">1774</string>
+
+    <string name="art_title_fran">Tribuna of the Uffizi</string>
+    <string name="art_author_fran">Johann Zoffany</string>
+    <string name="art_year_fran">1772</string>
+
+    <string name="art_title_okayama">岡山後楽園</string>
+    <string name="art_author_okayama">川瀬巴水</string>
+    <string name="art_year_okayama">1934</string>
+
+    <string name="art_title_yohan">Pastoral Landscape</string>
+    <string name="art_author_yohan">Francois Bouncher</string>
+    <string name="art_year_yohan">1741</string>
 </resources>
