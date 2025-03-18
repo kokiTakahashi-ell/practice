@@ -253,6 +253,14 @@ fun ArtSpaceUI(
 @Composable
 fun DefaultPreview() {
     WorkSpaceTheme {
-        ArtSpaceApp()
+//        ArtSpaceApp()
+        ArtSpaceUI(
+            resId = R.drawable.oranie,
+            title = R.string.art_title_oran,
+            description = R.string.art_author_oran,
+            year = R.string.art_year_oran,
+            onValueChange = { },
+            value = 1
+        )
     }
 }
