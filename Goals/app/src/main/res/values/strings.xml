@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Goals</string>
+
+    <string name="goal1">Learn Kotlin</string>
+    <string name="goal1_description">Master the basics of Kotlin programming language, including syntax, data types, and control structures. Practice by building small projects and solving coding challenges.</string>
+
+    <string name="goal2">Build an Android App</string>
+    <string name="goal2_description">Create a simple Android application using Kotlin. Learn about Android components, activities, fragments, and how to manage the app lifecycle.</string>
+
+    <string name="goal3">Understand Jetpack Compose</string>
+    <string name="goal3_description">Learn how to use Jetpack Compose for building UI in Android. Explore composable functions, state management, and how to create responsive layouts.</string>
+
+    <string name="goal4">Improve UI/UX Design</string>
+    <string name="goal4_description">Enhance your skills in designing user-friendly interfaces. Study design principles, user experience best practices, and tools like Figma or Sketch.</string>
+
+    <string name="goal5">Learn Git</string>
+    <string name="goal5_description">Understand the basics of version control using Git. Learn how to create repositories, commit changes, branch, merge, and collaborate with others using platforms like GitHub.</string>
+
+    <string name="goal6">Master Data Structures</string>
+    <string name="goal6_description">Get a solid understanding of common data structures such as arrays, linked lists, stacks, queues, trees, and graphs. Learn how to implement and use them effectively.</string>
+
+    <string name="goal7">Learn Algorithms</string>
+    <string name="goal7_description">Study and implement various algorithms, including sorting, searching, and graph algorithms. Understand their time and space complexities and how to optimize them.</string>
+
+    <string name="goal8">Understand Clean Code Principles</string>
+    <string name="goal8_description">Learn how to write clean, maintainable code by following best practices such as naming conventions, code organization, and refactoring techniques.</string>
+
+    <string name="goal9">Build a Portfolio</string>
+    <string name="goal9_description">Create a portfolio showcasing your projects and skills. Include detailed descriptions, screenshots, and links to the source code or live demos.</string>
+
+    <string name="goal10">Contribute to Open Source</string>
+    <string name="goal10_description">Get involved in open source projects and contribute to the community. Learn how to find projects, submit pull requests, and collaborate with other developers.</string>
+</resources>
