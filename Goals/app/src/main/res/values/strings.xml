@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Goals</string>
 
+    <string name="expand_button_content_description">See more or less information about a dog.</string>
+
     <string name="goal1">Learn Kotlin</string>
     <string name="goal1_description">Master the basics of Kotlin programming language, including syntax, data types, and control structures. Practice by building small projects and solving coding challenges.</string>
 

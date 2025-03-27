@@ -120,16 +120,17 @@ fun HeroInformation(
         Text(
             text = stringResource(heroName),
             style = MaterialTheme.typography.displaySmall,
-            modifier = Modifier
-                .weight(1f, fill = false),
-            overflow = TextOverflow.Ellipsis
+//            modifier = Modifier
+//                .weight(1f),
+//            overflow = TextOverflow.Ellipsis
         )
         Text(
             text = stringResource(heroDescription),
             style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.weight(1f, fill = false),
-            overflow = TextOverflow.Ellipsis,
-            maxLines = 3
+//            modifier = Modifier
+//                .weight(1f),
+//            overflow = TextOverflow.Ellipsis,
+//            maxLines = 3
         )
     }
 }
