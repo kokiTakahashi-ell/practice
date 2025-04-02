@@ -1,0 +1,807 @@
+課題1 進捗
+
+Unit 1
+Kotlinの概要 skip(6 activity).       			comp
+Android studio setup(5 activity) 			comp
+基本的なレイアウトを作成する(5 activity)    comp
+
+Unit	2
+kotlinの基礎　　　　　　　　　　　　　　　comp
+アプリにボタンを追加する				comp
+UIと状態を操作する						comp
+
+Unit3
+Kotlinの基礎（その他）					comp
+スクロール可能なリストを作成する　　　　　comp
+美しいアプリを作成する					comp
+
+Unit 4
+アーキテクチャコンポーネント
+Compose での ViewModel と状態 6の初め
+
+
+現在：ナヴィゲーションとアプリアーキテクチャ
+Compose での ViewModel と状態
+
+/////////////////////////////////////////
+3/6
+Emulator 端末の追加について覚えた
+* AVD を作成するには、プロジェクトを開いて [Tools] > [Device Manager] をクリックし、Device Manager を使用してハードウェア デバイスとシステム イメージを選択します。
+
+Wifi接続でデバッグ
+https://developer.android.com/codelabs/basic-android-kotlin-compose-connect-device?continue=https%3A%2F%2Fdeveloper.android.com%2Fcourses%2Fpathways%2Fandroid-basics-compose-unit-1-pathway-2&hl=ja#4
+
+Usbデバッグをオンにしてもインストールできなかった
+->USBkeiyudeアプリをインストールがオンになってないから？ Miアカウントが必要？
+
+
+コンポーズ可能な関数の機能
+・Uiの一部を記述する
+・何も返さない
+・入力を受け取り、画面に表示されるものを生成する
+->動的なリスト生成はテストコードが必要そう？画面に表示するUIのみコンポーズ可能？
+
+@preview アノテーションの引数種類 https://qiita.com/Ah_/items/f6a512d954f52197d566
+引数名	型	説明
+name	String	Preview画面で表示される名前
+group	String	Previewのグループ名を指定。同じグループに属するPreviewをまとめて表示可能
+apiLevel	Int	レンダリング時に使用するAPIレベルを指定
+widthDp	Int	レンダリング時の最大幅（dp単位）を指定
+heightDp	Int	レンダリング時の最大高さ（dp単位）を指定
+locale	String	使用するロケールを指定（例: ja-JP）
+fontScale	Float	フォントスケールを指定
+showSystemUi	Boolean	trueの場合、デバイスのステータスバーやアクションバーを表示
+showBackground	Boolean	trueの場合、デフォルトの背景色を表示
+backgroundColor	Long	背景色を32ビットのARGBカラーで指定
+uiMode	Int	android.content.res.Configuration.uiModeに基づいたUIモードのビットマスク（例: UI_MODE_NIGHT_YESでダークモード）
+device	String	使用するデバイスを指定（例: spec:width=1080px,height=1920px,dpi=420）。利用可能なデバイスはAndroid Studioで確認可能
+wallpaper	Int	Android Studioで利用可能なダイナミックテーマ用の壁紙を指定
+
+Compose 関数が何も返さず、@Composable アノテーションが付いている場合は、パスカルケースを使用して名前を付ける必要があります。パスカルケースとは、複合語内の各単語の最初の文字が大文字になる命名規則である
+
+Compose 関数:
+* 必ず名詞: DoneButton()
+* 動詞または動詞句にしない: DrawTextField()
+* 名詞の前置詞にしない: TextFieldWithLink()
+* 形容詞にしない: Bright()
+* 副詞にしない: Outside()
+* 名詞の前に記述形容詞を付けることが可能: RoundIcon()
+
+
+compose関数は、直接previewしないでデフォルトの値などを設定した上の新しい関数を定義する->previewの内容は実際に反映はされないのでテスト用
+
+
+例
+@Composable
+fun Greeting(name: String, modifier: Modifier = Modifier) {
+    Text(
+        text = "Hello $name!",
+        modifier = modifier
+    )
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BirthdayCardPreview() {
+    HappyBirthdayTheme {
+        Greeting("Android")
+    }
+}
+
+UIのフォントサイズの単位種類
+dp =（幅（ピクセル）* 160）/ 画面密度
+sp 拡張可能ピクセル
+基本的にはspを使いそう？
+
+
+Padding 4dp単位で行うのが推奨
+
+画像のインポート方法
+[View] > [Tool Windows] > [Resource Manager] 
+Import Drawables
+
+背景画像はdrawable-nodpiフォルダに入れる
+
+ContentScale ContentScale.Crop パラメータを使用し、画像の幅と高さが、それぞれ画面の幅と高さと等しいかそれ以上になるように、アスペクト比を維持しながら均等に画像を拡大する
+
+余白の付け方の図
+https://developer.android.com/codelabs/basic-android-kotlin-compose-add-images?hl=ja&continue=https%3A%2F%2Fdeveloper.android.com%2Fcourses%2Fpathways%2Fandroid-basics-compose-unit-1-pathway-3%3Fhl%3Dja%23codelab-https%3A%2F%2Fdeveloper.android.com%2Fcodelabs%2Fbasic-android-kotlin-compose-add-images#4 
+
+練習作成記事でテキスト内の右の余白が埋まらなかった
+->回答確認
+
+
+/////////////////////////////////////////
+3/11
+ 
+文字を太字に
+FontWeight =FontWeight.Bold
+
+文字サイズデフォルト設定
+fontSize = TextUnit.Unspecified,
+
+Boxでの垂直と水平の中央ぞろえ
+contentAlignment = Alignment.Center
+
+getStringは使えなかったがStringResourceならコンポーズ関数でも使える
+
+import androidx.compose.ui.res.stringResource
+
+title = stringResource(R.string.first_title),
+description = stringResource(R.string.first_description),
+
+getStringはコンポーズ関数内でも使えるのか？⭐️
+
+column中央揃えは
+verticalArrangement = Arrangement.Center,
+horizontalAlignment = Alignment.CenterHorizontally
+
+4象限の模範回答がなぜこのように動いているのかがわからない⭐️
+Column(Modifier.fillMaxWidth()) {
+    Row(Modifier.weight(1f)) {
+		Column(
+    modifier = modifier
+        .fillMaxSize()
+        .background(backgroundColor)
+        .padding(16.dp),
+    verticalArrangement = Arrangement.Center,
+    horizontalAlignment = Alignment.CenterHorizontally
+) {
+
+当たり前だけどmodifierが子要素に追加の必要がなければ、省略する
+
+Textを中央配置にするときにtextAlign = TextAlign.Center
+ではなく、親要素で水平と垂直に中央にする
+
+要素の中央配置にするときにboxでも可能だが中身のテキストなども中央配置するときは、Columnで水平と垂直に中央配置すればok
+
+
+個別で中央配置する場合は？
+
+小さい要素UIでPreviewするときに横幅が足りない場合どうすればいい？⭐️
+
+なぜcompose記事においてfillmaxwidthがなぜ必要ないのか？⭐️
+
+
+Iconを使うとき、引数にImageVector型を使用
+Icon(
+    imageVector = icon,
+    contentDescription = null,
+    modifier = Modifier.padding(end = 8.dp),
+    tint = Color(0xFF3ddc84)
+)
+
+垂直にスペースを開けながら
+verticalArrangement = Arrangement.spacedBy(8.dp)
+
+kotlinにおいてswitch関数がwhen関数
+
+wrapContentSize() メソッドを Modifier オブジェクトに連結し、コンポーネントを中央に配置するための引数として Alignment.Center を渡します。Alignment.Center は、コンポーネントを縦方向と横方向の両方で中央に配置することを指定します。
+//////////////////////////////////////////////
+
+3/13　ステートレス 
+
+Top barを作る方法
+
+Scaffold(
+    topBar = {
+        CenterAlignedTopAppBar(
+            title = {
+                Text(
+                    text = "Lemonade",
+                    fontWeight = FontWeight.Bold
+                )
+            },
+            colors = TopAppBarDefaults.largeTopAppBarColors(
+                containerColor = MaterialTheme.colorScheme.primaryContainer
+            )
+        )
+    }
+) { innerPadding ->
+    Surface(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(innerPadding)
+            .background(MaterialTheme.colorScheme.tertiaryContainer),
+        color = MaterialTheme.colorScheme.background
+    )
+
+
+Buttonの中のonclick内で外部変数を使う場合の方法
+Rememberを使う
+
+@Compose
+fun display(){
+	…..
+	var result by remember { mutableStateOf( 5) }
+}
+
+確認
+再コンポーズされる時は、この関数のコードが再読み込みされるのか？
+親関数の中に子関数が２個あり、その中の片方にrememberが使われており、変化した場合はどうなる？変化の生じた部分だけ呼び出されるということでいいのでしょうか？
+
+場面切り替えを数字で
+Surface(
+    modifier = Modifier
+        .fillMaxSize()
+        .padding(innerPadding)
+        .background(MaterialTheme.colorScheme.tertiaryContainer),
+    color = MaterialTheme.colorScheme.background
+) {
+    when (currentStep) {
+        1 -> {
+            LemonTextAndImage(
+                textLabelResourceId = R.string.lemon_select,
+                drawableResourceId = R.drawable.lemon_tree,
+                contentDescriptionResourceId = R.string.lemon_tree_content_description,
+                onImageClick = {
+                    currentStep = 2
+                    squeezeCount = (2..4).random()
+                }
+            )
+        }
+        2 -> {
+            LemonTextAndImage(
+…..
+
+なるべく部品化してifなどは大元で分岐させる意識
+
+
+自動インポート
+https://codeforfun.jp/android-studio-how-to-enable-auto-import/
+
+
+テキストフィールドの自動更新と数値だけのキーボードへと変更
+@Composable
+fun EditNumberField(modifier: Modifier = Modifier) {
+    var amountInput by remember { mutableStateOf("") }
+    TextField(
+        value = amountInput,
+        onValueChange = { amountInput = it },
+        singleLine = true,
+        label = { Text(stringResource(R.string.bill_amount)) },
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+        modifier = modifier
+    )
+}
+
+部品化する際のステートレスのやり方
+親関数に状態を管理する変数とその型変換用の器を用意する。
+var amountInput by remember { mutableStateOf("0") }
+val amount = amountInput.toDoubleOrNull() ?: 0.0
+
+子関数内で以下の引数の記述を行う
+onValueChange: (String) -> Unit——これは状態更新を自動で行うための引数
+value: String,————————————これはただの値を渡すための引数
+
+以下のように引数を渡す
+@Composable
+fun EditNumberField(
+    @StringRes label: Int,
+    @DrawableRes leadingIcon: Int,
+    keyboardOptions: KeyboardOptions,
+    modifier: Modifier = Modifier,
+    value: String,
+    onValueChange: (String) -> Unit
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChange,
+        modifier = modifier,
+        label = { Text(stringResource(label)) },
+        singleLine = true,
+    )
+}
+
+
+呼び出し方
+EditNumberField(
+    label = R.string.tip_percentage,
+    leadingIcon = {Icon(painterResource(id = leaingIcon),null)},
+    keyboardOptions = KeyboardOptions.Default.copy(
+        keyboardType = KeyboardType.Number,
+        imeAction = ImeAction.Done
+    ),
+    modifier = Modifier.padding(bottom = 32.dp).fillMaxWidth(),
+    value = tipPercentage,
+    onValueChange = { tipPercentage = it },
+)
+
+一般的に、アサーションの作成は自動テストの最終目標です。アサーションは、アプリコードではほとんど使用されません。この例では、actualTip 変数が expectedTip 変数と等しいことを確認します。そのためには、JUnit ライブラリの assertEquals() メソッドを使用できます。
+assertEquals() メソッドは、2 つのパラメータ（期待される値と実際の値）を受け取ります。それらの値が等しければ、アサーションとテストは合格です。等しくなければ、アサーションとテストは失敗です
+
+Testのやりかた
+https://developer.android.com/codelabs/basic-android-kotlin-compose-write-automated-tests?hl=ja&continue=https%3A%2F%2Fdeveloper.android.com%2Fcourses%2Fpathways%2Fandroid-basics-compose-unit-2-pathway-3%3Fhl%3Dja%23codelab-https%3A%2F%2Fdeveloper.android.com%2Fcodelabs%2Fbasic-android-kotlin-compose-write-automated-tests#3
+
+////////////////////////////
+3/17
+
+
+preview内でR.string.___, R.drawable.___などを引数として渡すことはできるのか？
+→可能
+たまにバグって認識しないことがある
+
+
+import android.graphics.fonts.FontStyle
+これがある状態で
+import androidx.compose.ui.text.font.FontStyle
+これの
+fontStyle = FontStyle.Italic
+使うとエラーが吐く、競合？
+
+一つのテキストに複数の字体や色のテキストを作成する方法
+val styledText = buildAnnotatedString {
+    // 青色の"Hello"
+    withStyle(SpanStyle(color = Color.Blue)) {
+        append(stringResource(id = description))
+    }
+
+    // デフォルトスタイルの空白
+    append(" ")
+
+    // 緑色の"Android"
+    withStyle(SpanStyle(color = Color.Green, fontStyle = FontStyle.Italic)) {
+        append(stringResource(id = year))
+    }
+}
+
+
+文字の中央揃えはColumnのmodifierでhorizontalAlignment = Alignment.CenterHorizontally
+
+
+画像のはじをなぞるようにボーダーラインを引く方法？
+
+問題のように絵を浮かすように作る方法？
+
+大画面に適用する方法？
+→現在はマックスdpを設定しているだけ
+
+最大の幅を設定する方法？
+
+様々な画面においてはどのように設定する？
+If文を用いて細かく分岐させるのか？
+
+
+windowSizeClass: WindowSizeClass = currentWindowAdaptiveInfo().windowSizeClass
+これは何？
+
+これのimportを行うとバグって
+Problem: In version catalog libs, alias 'androidx-material3-window-size-class-android' is not a valid alias.  Reason: Alias 'androidx-material3-window-size-class-android' is a reserved name in Gradle which prevents generation of accessors.  Possible solution: Use a different alias which doesn't contain 'class'.
+
+依存関係の部分で何かしらの競合？起きているのかも？
+
+
+Column (
+    modifier = Modifier
+        .widthIn(max = 400.dp)
+        .fillMaxWidth()
+        .padding(top = 4.dp, bottom = 4.dp, start = 16.dp, end = 16.dp)
+        .border(1.dp, Color.Black),
+    horizontalAlignment = Alignment.CenterHorizontally
+){
+
+
+Column (
+    modifier = Modifier
+	.fillMaxWidth()
+        .widthIn(max = 400.dp)
+        .padding(top = 4.dp, bottom = 4.dp, start = 16.dp, end = 16.dp)
+        .border(1.dp, Color.Black),
+    horizontalAlignment = Alignment.CenterHorizontally
+){
+順番の違いが出ている
+
+２時間半
+
+
+複数のクラスを作成したときに、どのクラスも同じ名前のフィールド変数や引数の名前を持っているときに型が違う変数を扱うときに
+class Question<T>(
+    val questionText: String,
+    val answer: T,
+    val difficulty: String
+)
+
+fun main() {
+    val question1 = Question<String>("Quoth the raven ___", "nevermore", "medium")
+    val question2 = Question<Boolean>("The sky is green. True or false", false, "easy")
+    val question3 = Question<Int>("How many days are there between full moons?", 28, "hard")
+}
+同じ名前のクラスから複数の型を所持したものを作ることができる
+
+
+データクラスでは以下のメソッドが事前に作られる
+* equals()
+* hashCode(): このメソッドは、特定のコレクション型を操作する際に使用されます。
+* toString()
+* componentN(): component1()、component2()（以下同様）
+* copy()
+
+複数のクラスを作ったときにequalsではtrueを返してくる
+普通は中のデータが違うとfalseになるが、データ型の部分を比較して返してくる
+
+Companion objectがstatic修飾子と同じ？ Companionはクラス内に1つか定義できない、シングルトン
+複数のクラスでは作れてしまうということ？
+
+拡張プロパティや拡張関数の存在
+外部からそのクラスに新しく変数を定義することができるが、get()の呼び出しでしか取り出せない
+→正確にはデータとして格納されていないので見せかけ？
+1つ目のクラスで作成した後に違うクラスでその作成したものを呼び出そうとすると無理ということ？
+
+長い名前の変数の複数回に渡り呼び出したりすある場合においてlet関数が使える
+fun printQuiz() {
+    question1.let {
+        println(it.questionText)
+        println(it.answer)
+        println(it.difficulty)
+    }
+    println()
+    question2.let {
+        println(it.questionText)
+        println(it.answer)
+        println(it.difficulty)
+    }
+    println()
+    question3.let {
+        println(it.questionText)
+        println(it.answer)
+        println(it.difficulty)
+    }
+    println()
+}
+
+
+Quiz().apply {
+    printQuiz()
+}
+変数なしで呼び出すことができる？？？
+Quizクラスはstaticなのか？
+
+
+Setを使うと通常の一意性を保ち、ハッシュコードを使って識別する
+Setはハッシュコードで管理されているため通常のindexOf()などよりも早く探し当てることができる 
+Setにはインデックスがないのでremoveやaddで要素を追加していく
+
+cookies.forEach {
+    println("Menu item: $it")
+}
+全ての識別子の出力
+cookies.forEach {
+    println("Menu item: ${it.name}")
+}
+識別子に対する名前を出力
+
+
+型定義において初期値でnullでもいい場合
+val description: String? = null
+とかく
+
+event = mutableListOf<Event>
+
+コレクション操作
+https://zenn.dev/airiswim/articles/233ab67d3940c6
+
+
+///////////////////////////////////////
+3/18
+
+画面上部のステータスバーのpadding
+.statusBarspadding
+
+画面のレイアウトの向きを取得し、左右のパディングを設定する
+val layoutDirection = LocalLayoutDirection.current
+
+.padding(
+    start = WindowInsets.safeDrawing.asPaddingValues()
+        .calculateStartPadding(layoutDirection),
+    end = WindowInsets.safeDrawing.asPaddingValues()
+        .calculateEndPadding(layoutDirection),
+),
+
+スクロール可能リスト　LazyColumn{}
+
+アプリアイコン種類詳細
+* mdpi - 中密度画面（160 dpi まで）用のリソース
+* hdpi - 高密度画面（240 dpi まで）用のリソース
+* xhdpi - 超高密度画面（320 dpi まで）用のリソース
+* xxhdpi - 超超高密度画面（480 dpi まで）用のリソース
+* xxxhdpi - 超超超高密度画面（640 dpi まで）用のリソース
+* nodpi - 画面のピクセル密度にかかわらずスケーリングされることを想定してないリソース
+* anydpi - 任意の密度にスケーリングされるリソース
+
+アイコンにはセーフゾーンがある
+セーフゾーンは、フォアグラウンド レイヤ中央にある直径 66 dpi の円形です。セーフゾーンの外のコンテンツは、切り取られても構わない、必須でないものにする必要があります（背景色など）。
+この部分は絶対に切り取られないということ
+
+
+実機テストができないので
+Adbコマンドもないのでインストールする
+
+Android Studioを開きます。
+メニューから Tools > SDK Manager を選択します。
+SDK Tools タブを選択し、Android SDK Platform-Tools にチェックを入れてインストールします。
+
+環境変数を設定:  
+adbコマンドが含まれているディレクトリをパスに追加します。通常、このディレクトリは ~/Library/Android/sdk/platform-tools です。
+以下のコマンドを ~/.zshrc ファイルに追加して、パスを設定します。
+
+export PATH=$PATH:~/Library/Android/sdk/platform-tools
+
+~/.zshrcファイルの作成は
+
+nano ~/.zshrc
+
+記述
+
+Ctrl 0 Ctrl xで保存終了
+
+source ~/.zshrc
+
+
+
+要素を相対的に配置する方法
+Viewのxmlファイルの時にやった時のような感覚
+
+Composable
+fun RelativeLayoutExample() {
+    val constraints = ConstraintSet {
+        val box1 = createRefFor("box1")
+        val box2 = createRefFor("box2")
+
+        constrain(box1) {
+            top.linkTo(parent.top, margin = 16.dp)
+            start.linkTo(parent.start, margin = 16.dp)
+        }
+
+        constrain(box2) {
+            top.linkTo(box1.bottom, margin = 16.dp)
+            start.linkTo(box1.end, margin = 16.dp)
+        }
+    }
+
+    ConstraintLayout(
+        constraintSet = constraints,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Box(
+            modifier = Modifier
+                .size(100.dp)
+                .layoutId("box1")
+                .background(Color.Red)
+        )
+        Box(
+            modifier = Modifier
+                .size(100.dp)
+                .layoutId("box2")
+                .background(Color.Blue)
+        )
+    }
+}
+
+
+イメージ画像の下に余白ができてしまうのでカードの上下の高さに合わせたいがやり方がわからないです(親要素の高さに合わせる方法がわからない)fillmaxにすると一番大元の画面の高さになってしまう
+
+
+カラーの設定
+https://material-foundation.github.io/material-theme-builder/
+
+カラーパレットの種類
+* プライマリ カラーは、UI の主要なコンポーネントに使用されます。
+* セカンダリ カラーは、UI の目立たないコンポーネントに使用されます。
+* ターシャリ カラーは、プライマリ カラーとセカンダリ カラーのバランスを保つため、または入力フィールドなどの要素に注意を引くための、対照的なアクセントに使用されます。
+* オンカラー要素は、パレット内の他の色の上に配置され、主にテキスト、アイコン、ストロークに適用されます。カラーパレットでは、サーフェス色の上に表示される onSurface カラーと、プライマリ カラーの上部に表示される onPrimary カラーがあります。
+
+色の設定->Pick your fonts->export(composeUI)->ダウンロード
+
+
+初見：ダークテーマカラーなどの部分
+@Composable
+fun WoofTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    // Dynamic color is available on Android 12+
+    dynamicColor: Boolean = false,
+    content: @Composable () -> Unit
+) {
+    val colorScheme = when {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
+
+        darkTheme -> DarkColors
+        else -> LightColors
+    }
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            setUpEdgeToEdge(view, darkTheme)
+        }
+    }
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        shapes = Shapes,
+        typography = Typography,
+        content = content
+    )
+}
+
+部品のシェイプについて
+基本的には, RoundCornerShapeを使って行う
+
+シェイプの定義はshape.ktに入れる
+val Shapes = Shapes(
+   small = RoundedCornerShape(50.dp),
+)
+
+そしてそれをimageなどのアイコンのmodifierのところで.clip(MaterialTheme.shapes.small),
+クリップする
+
+//////////////////////////////////////
+3/24
+マテリアルテーマンボ部分でディスプレイや見出しなどは固定のサイズなのかそれとも自動でその端末のサイズに合わせて変わるのか
+
+Resディレクトリにfontフォルダを作成してfontのカスタムフォントをダウンロード、fontフォルダに入れるときにエラーが出る
+.tffファイルに赤いエラー線が出る？
+→キャッシュクリアしても表示は変わらないが、実行してフォントの変更結果の表示はできている
+
+MaterialTheme(
+	colors = colors
+)
+
+これだとエラーが出るので
+
+colorScheme = colorScheme
+にして入れるとエラー線はなくなる
+
+CenterAlignedTopAppBarを使うと自動インポートでは赤い破線が引かれるがよくわからず自動修正したら消えた
+
+二つ同時にpreviewする場合には、
+@Preview
+@Composable
+fun WoofPreview() {
+    WoofTheme(darkTheme = false) {
+        WoofApp()
+    }
+}
+
+@Preview
+@Composable
+fun WoofDarkThemePreview() {
+    WoofTheme(darkTheme = true) {
+        WoofApp()
+    }
+}
+並べて行うことで可能
+
+Start Interactive Modeオンによってpreviewでもボタンのタップによって行うことができるようになる
+
+シンプルなアニメーションラップされた要素に対して
+modifier = Modifier
+    .animateContentSize(
+        animationSpec = spring(
+            dampingRatio = Spring.DampingRatioNoBouncy,
+            stiffness = Spring.StiffnessMedium
+        )
+    )
+をつける
+
+Compose には、Float、Color、Dp、Size、Offset、Int など、多数のデータ型に使える animate*AsState() 関数が用意されています。汎用型を受け入れる animateValueAsState() を使用すると様々なデータ型に対応できる
+
+val color by animateColorAsState(
+       targetValue = if (expanded) MaterialTheme.colorScheme.tertiaryContainer
+       else MaterialTheme.colorScheme.primaryContainer,
+   )
+
+backgroundを修飾子につけてcolorを指定する。
+
+
+ユーザー補助機能のテストにおいてうまく動作しない
+Google play storeが起動しないので入れることができない
+
+
+Cardの立体的な見え方elevation
+elevation = CardDefaults.cardElevation(
+    defaultElevation = 2.dp
+),
+
+
+いつか使う
+https://takerpg.hatenablog.jp/entry/2022/07/24/170902
+
+可変な文字列とイメージ画像の並びに対して画像を右端に持っていくのはテキスト　Spacer(weight(1f))  イメージ
+しかし、文字列が
+
+以下で文字列　画像で重ならずに右端と左端に寄せることができた
+Row(){
+	要素(weight(1f))
+	Spacer(固定値)
+	要素()
+}
+
+以下だと2個目の要素が右端によるが、左の要素とかぶってしまう
+Row(){
+	要素()
+	Spacer(weight(1f))
+	要素()
+}
+
+リスト表示の可変行な文字列の表示がわからなかったです
+高さに余裕があり、改行すれば綺麗に見えるのに自動で改行してくれる方法がわからないです
+
+30日間アプリ
+作る方針
+初手の見た目はスクロール可能な
+Day1.       開くボタンのみのcard
+
+開くボタンを押すとアニメーションで開いて
+Day1
+タイトル
+画像
+説明
+以上を載せる
+
+
+次回聞くこと
+modifier修飾子の引数にした場合とそのまま直で書いた時の差について聞く
+
+
+
+
+
+
+
+
+
+/////////////////////////////////
+
+3/27
+文字のスタイルで色を変更する方法
+
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
+
+キャッシュクリアしてもこのimport文を受け付けてくれない
+
+->デフォルトでは49個しか入っていないので
+
+ライブラリをインストールする必要がある
+Module:appの依存関係のなかに
+
+implementation("androidx.compose.material:material-icons-extended")
+
+を追記する必要がある
+
+Topbarの色を直接指定して色を変更する？
+colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+    containerColor = MaterialTheme.colorScheme.primary
+)
+
+
+カラーテーマをサイトで設定して生成されたコードを入れた結果
+どのようにしてUIにその色が適用されているのか？
+
+アクティビティは作成したらスタックしていくが戻るボタンを押すとホーム画面に戻るのと同じような挙動(ライフサイクル)をするのか？
+
+アクティビティをdestroyしたほうがいいのか？(内容を保持しなくてもいい場合)
+
+Tagをつける場合
+global変数としてprivate const cal TAG = ""
+を定義することでコンパイル時に定数として記録されて使える
+
+* onCreate(): システムがアプリを作成するとき。
+* onStart(): アプリが画面に表示されますが、ユーザーはまだ操作できません。
+* onResume(): アプリがフォアグラウンドになり、ユーザーが操作できるようになります。
+
+
+
+
+// Game UI state
+private val _uiState = MutableStateFlow(GameUiState())
+val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
+
+_uiState.asStateFlow()を代入することでModel 内では、可変であったが外部といmodelともに読み取り専用の状態になる
+
+////////////////////////////////
+
+
+
