@@ -28,4 +28,9 @@
     <string name="tax">Tax: %s</string>
     <string name="total">Total: %s</string>
     <string name="submit">Submit</string>
+    <string name="start_screen">開始</string>
+    <string name="main_screen">主菜のメニュー</string>
+    <string name="sub_screen">副菜のメニュー</string>
+    <string name="add_screen">付け合わせのメニュー</string>
+    <string name="assignment_screen">ご購入の手続き</string>
 </resources>

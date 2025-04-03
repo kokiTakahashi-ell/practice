@@ -37,10 +37,10 @@ fun AccompanimentMenuScreen(
 ) {
     BaseMenuScreen(
         options = options,
+        modifier = modifier,
         onCancelButtonClicked = onCancelButtonClicked,
         onNextButtonClicked = onNextButtonClicked,
-        onSelectionChanged = onSelectionChanged as (MenuItem) -> Unit,
-        modifier = modifier
+        onSelectionChanged = onSelectionChanged as (MenuItem) -> Unit
     )
 }
 
