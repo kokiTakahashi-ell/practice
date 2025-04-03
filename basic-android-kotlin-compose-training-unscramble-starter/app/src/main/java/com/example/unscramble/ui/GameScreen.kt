@@ -115,6 +115,7 @@ fun GameScreen(gameViewModel: GameViewModel = viewModel()) {
                 modifier = Modifier
                     .fillMaxWidth()
 //                    .weight(1f)
+                    .padding(start = 8.dp)
             ) {
                 Text(
                     text = stringResource(R.string.skip),
