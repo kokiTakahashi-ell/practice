@@ -30,6 +30,7 @@ class DessertViewModel: ViewModel() {
     private var revenue by mutableIntStateOf(0)
     private var currentIndex by mutableIntStateOf(0)
     private var currentPrice by mutableIntStateOf(desserts[currentIndex].price)
+//    private var currentPrice by mutableIntStateOf(0)
     private var currentImage by mutableIntStateOf(desserts[currentIndex].imageId)
     private var countSold by mutableIntStateOf(0)
 
@@ -55,7 +56,7 @@ class DessertViewModel: ViewModel() {
         revenue += currentPrice
         Log.d( TAG,"revenue : $revenue")
         Log.d( TAG,"currentPrice : $currentPrice")
-        Log.d( TAG,"desserts[currentIndex] : $desserts")
+        Log.d( TAG,"desserts[currentIndex] : ${desserts[currentIndex]}")
     }
 
     private fun updateDessertState (
@@ -66,7 +67,8 @@ class DessertViewModel: ViewModel() {
                 revenue = revenue,
                 dessertsSold = countSold,
                 dessertImageId = imageId,
-                currentIndex = currentIndex
+                currentIndex = currentIndex,
+                currentPrice = currentPrice
             )
         }
     }
