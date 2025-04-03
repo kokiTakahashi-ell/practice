@@ -15,7 +15,6 @@
  */
 package com.example.cupcake.ui
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -55,8 +54,8 @@ fun SelectOptionScreen(
     onSelectionChanged: (String) -> Unit = {},
     onCancelButtonClicked: () -> Unit = {},
     onNextButtonClicked: () -> Unit = {},
-    @SuppressLint("ModifierParameter") modifier: Modifier = Modifier
-){
+    modifier: Modifier = Modifier
+) {
     var selectedValue by rememberSaveable { mutableStateOf("") }
 
     Column(
@@ -114,6 +113,7 @@ fun SelectOptionScreen(
             }
             Button(
                 modifier = Modifier.weight(1f),
+                // the button is enabled when the user makes a selection
                 enabled = selectedValue.isNotEmpty(),
                 onClick = onNextButtonClicked
             ) {
@@ -121,6 +121,7 @@ fun SelectOptionScreen(
             }
         }
     }
+
 }
 
 @Preview
