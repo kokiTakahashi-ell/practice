@@ -69,6 +69,7 @@ fun ReplyHomeScreen(
     onDetailScreenBackPressed: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+
     val navigationItemContentList = listOf(
         NavigationItemContent(
             mailboxType = MailboxType.Inbox,

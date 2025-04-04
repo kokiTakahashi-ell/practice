@@ -31,6 +31,10 @@
     <string name="swimming">Swimming</string>
     <string name="table_tennis">Table Tennis</string>
     <string name="tennis">Tennis</string>
+    <string name="tab_inbox">Inbox</string>
+    <string name="tab_sent">Sent</string>
+    <string name="tab_drafts">Drafts</string>
+    <string name="tab_spam">Spam</string>
 
     <string name="sports_list_subtitle">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent ultrices congue rutrum.</string>
     <string name="sport_detail_text">
