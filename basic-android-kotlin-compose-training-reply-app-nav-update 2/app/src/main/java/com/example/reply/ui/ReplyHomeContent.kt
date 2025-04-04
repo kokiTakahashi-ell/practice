@@ -42,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -118,8 +119,9 @@ fun ReplyListAndDetailContent(
             replyUiState = replyUiState,
             modifier = Modifier
                 .padding(top = dimensionResource(R.dimen.email_list_item_vertical_spacing))
-                .weight(1f),
-            onBackPressed = {}
+                .weight(1f)
+                .testTag(stringResource(R.string.details_screen)),
+            onBackPressed = { activity.finish() }
         )
     }
 }
