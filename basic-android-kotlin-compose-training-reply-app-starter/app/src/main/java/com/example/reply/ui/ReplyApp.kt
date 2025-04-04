@@ -21,13 +21,36 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.reply.data.Email
 import com.example.reply.data.MailboxType
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import com.example.reply.ui.utils.ReplyNavigationType
 
 @Composable
 fun ReplyApp(
+    windowSize: WindowWidthSizeClass,
     modifier: Modifier = Modifier,
 ) {
     val viewModel: ReplyViewModel = viewModel()
     val replyUiState = viewModel.uiState.collectAsState().value
+    var navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
+
+    when (windowSize) {
+        WindowWidthSizeClass.Compact -> {
+            // Handle compact window size
+            navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
+        }
+        WindowWidthSizeClass.Medium -> {
+            // Handle medium window size
+            navigationType = ReplyNavigationType.NAVIGATION_RAIL
+        }
+        WindowWidthSizeClass.Expanded -> {
+            // Handle expanded window size
+            navigationType = ReplyNavigationType.PERMANENT_NAVIGATION_DRAWER
+        }
+        else -> {
+            // Handle other cases if needed
+            navigationType = ReplyNavigationType.BOTTOM_NAVIGATION
+        }
+    }
 
     ReplyHomeScreen(
         replyUiState = replyUiState,
@@ -43,6 +66,7 @@ fun ReplyApp(
         onDetailScreenBackPressed = {
             viewModel.resetHomeScreenStates()
         },
-        modifier = modifier
+        modifier = modifier,
+        navigationType = navigationType,
     )
 }
