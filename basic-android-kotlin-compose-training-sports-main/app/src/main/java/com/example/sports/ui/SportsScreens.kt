@@ -16,7 +16,6 @@
 
 package com.example.sports.ui
 
-import android.provider.ContactsContract.CommonDataKinds.Email
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,34 +27,22 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Drafts
-import androidx.compose.material.icons.filled.Inbox
-import androidx.compose.material.icons.filled.Report
-import androidx.compose.material.icons.filled.Send
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationDrawerItemDefaults
-import androidx.compose.material3.PermanentDrawerSheet
-import androidx.compose.material3.PermanentNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -69,15 +56,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -86,7 +73,6 @@ import com.example.sports.data.LocalSportsDataProvider
 import com.example.sports.model.Sport
 import com.example.sports.ui.theme.SportsTheme
 import com.example.sports.utils.SportsContentType
-import com.example.sports.utils.SportsNavigationType
 
 /**
  * Main composable that serves as container
@@ -94,216 +80,72 @@ import com.example.sports.utils.SportsNavigationType
  */
 @Composable
 fun SportsApp(
-    windowSize: WindowWidthSizeClass
+    windowSize: WindowWidthSizeClass,
+    onBackPressed: () -> Unit,
 ) {
-    val navigationType: SportsNavigationType
-    val contentType: SportsContentType
     val viewModel: SportsViewModel = viewModel()
-    val sportUiState = viewModel.uiState.collectAsState().value
-
-    when (windowSize) {
-        WindowWidthSizeClass.Compact -> {
-            navigationType = SportsNavigationType.BottomNavigation
-            contentType = SportsContentType.ListOnly
-        }
-        WindowWidthSizeClass.Medium -> {
-            navigationType = SportsNavigationType.NavigationRail
-            contentType = SportsContentType.ListOnly
-        }
-        WindowWidthSizeClass.Expanded -> {
-            navigationType = SportsNavigationType.PermanentNavigationDrawer
-            contentType = SportsContentType.ListAndDetail
-        }
-        else -> {
-            navigationType = SportsNavigationType.BottomNavigation
-            contentType = SportsContentType.ListOnly
-        }
+    val uiState by viewModel.uiState.collectAsState()
+    val contentType = when (windowSize) {
+        WindowWidthSizeClass.Compact,
+        WindowWidthSizeClass.Medium -> SportsContentType.ListOnly
+        WindowWidthSizeClass.Expanded -> SportsContentType.ListAndDetail
+        else -> SportsContentType.ListOnly
     }
-
-    SportHomeScreen(
-        navigationType = navigationType,
-        contentType = contentType,
-        sportUiState = sportUiState,
-        viewModel = viewModel,
-        onTabPressed = { mailboxType: MailboxType ->
-            viewModel.updateCurrentMailbox(mailboxType = mailboxType)
-            viewModel.resetHomeScreenStates()
-        },
-        onEmailCardPressed = { email: Email ->
-            viewModel.updateDetailsScreenStates(
-                email = email
-            )
-        },
-        onDetailScreenBackPressed = {
-            viewModel.resetHomeScreenStates()
-        }
-    )
 
 //    Scaffold(
 //        topBar = {
 //            SportsAppBar(
-//                isShowingListPage = sportUiState.isShowingListPage,
+//                isShowingListPage = uiState.isShowingListPage,
 //                onBackButtonClick = { viewModel.navigateToListPage() },
+//                windowSize = windowSize
 //            )
 //        }
 //    ) { innerPadding ->
-//        if (sportUiState.isShowingListPage) {
-//            SportsList(
-//                sports = sportUiState.sportsList,
-//                onClick = {
-//                    viewModel.updateCurrentSport(it)
-//                    viewModel.navigateToDetailPage()
-//                },
-//                contentPadding = innerPadding,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(
-//                        top = dimensionResource(R.dimen.padding_medium),
-//                        start = dimensionResource(R.dimen.padding_medium),
-//                        end = dimensionResource(R.dimen.padding_medium),
-//                    )
-//            )
-//        } else {
-//            SportsDetail(
-//                selectedSport = sportUiState.currentSport,
-//                contentPadding = innerPadding,
-//                onBackPressed = {
-//                    viewModel.navigateToListPage()
-//                }
-//            )
-//        }
-//    }
-}
-
-@Composable
-fun SportHomeScreen(
-    navigationType: SportsNavigationType,
-    contentType: SportsContentType,
-    sportUiState: SportsUiState,
-    viewModel: SportsViewModel,
-    onTabPressed: (MailboxType) -> Unit,
-    onEmailCardPressed: (Email) -> Unit,
-    onDetailScreenBackPressed: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val navigationItemContentList = listOf(
-        NavigationItemContent(
-            mailboxType = MailboxType.Inbox,
-            icon = Icons.Default.Inbox,
-            text = stringResource(id = R.string.tab_inbox)
-        ),
-        NavigationItemContent(
-            mailboxType = MailboxType.Sent,
-            icon = Icons.AutoMirrored.Filled.Send,
-            text = stringResource(id = R.string.tab_sent)
-        ),
-        NavigationItemContent(
-            mailboxType = MailboxType.Drafts,
-            icon = Icons.Default.Drafts,
-            text = stringResource(id = R.string.tab_drafts)
-        ),
-        NavigationItemContent(
-            mailboxType = MailboxType.Spam,
-            icon = Icons.Default.Report,
-            text = stringResource(id = R.string.tab_spam)
+    if (contentType == SportsContentType.ListAndDetail) {
+        SportsListAndDetail(
+            sports = uiState.sportsList,
+            selectedSport = uiState.currentSport,
+            onClick = {
+                viewModel.updateCurrentSport(it)
+            },
+            onBackPressed = onBackPressed,
+            modifier = Modifier.fillMaxWidth(),
+            windowSize = windowSize,
+            viewModel = viewModel,
+            uiState = uiState,
         )
-    )
-
-    if (navigationType == SportsNavigationType.PermanentNavigationDrawer) {
-        PermanentNavigationDrawer(
-            modifier = Modifier,
-            drawerContent = {
-                PermanentDrawerSheet(Modifier.width(dimensionResource(R.dimen.drawer_width))) {
-                    NavigationDrawerContent(
-                        selectedDestination = sportUiState.currentSport,
-                        onTabPressed = onTabPressed,
-                        navigationItemContentList = navigationItemContentList,
-                        modifier = Modifier
-                            .wrapContentWidth()
-                            .fillMaxHeight()
-                            .background(MaterialTheme.colorScheme.inverseOnSurface)
-                            .padding(dimensionResource(R.dimen.drawer_padding_content))
-                    )
-                }
-            }
-        ) {
-            SportsAppContent(
-                navigationType = navigationType,
-                contentType = contentType,
-                sportUiState = sportUiState,
-                viewModel = viewModel,
-                onTabPressed = onTabPressed,
-                onEmailCardPressed = onEmailCardPressed,
-                modifier = modifier,
-            )
-        }
     } else {
-        if (sportUiState.isShowingListPage) {
-            SportsAppContent(
-                navigationType = navigationType,
-                contentType = contentType,
-                sportUiState = sportUiState,
-                viewModel = viewModel,
-                onTabPressed = onTabPressed,
-                onEmailCardPressed = onEmailCardPressed,
-                modifier = modifier,
-            )
-        } else {
-            SportsDetail(
-                selectedSport = sportUiState.currentSport,
-                contentPadding = innerPadding,
-                onBackPressed = {
-                    viewModel.navigateToListPage()
-                }
-            )
+        Scaffold(
+            topBar = {
+                SportsAppBar(
+                    isShowingListPage = uiState.isShowingListPage,
+                    onBackButtonClick = { viewModel.navigateToListPage() },
+                    windowSize = windowSize
+                )
+            }
+        ) { innerPadding ->
+            if (uiState.isShowingListPage) {
+                SportsList(
+                    sports = uiState.sportsList,
+                    onClick = {
+                        viewModel.updateCurrentSport(it)
+                        viewModel.navigateToDetailPage()
+                    },
+                    modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.padding_medium)),
+                    contentPadding = innerPadding,
+                )
+            } else {
+                SportsDetail(
+                    selectedSport = uiState.currentSport,
+                    contentPadding = innerPadding,
+                    onBackPressed = {
+                        viewModel.navigateToListPage()
+                    }
+                )
+            }
         }
     }
-}
-
-@Composable
-private fun SportsAppContent(
-    navigationType: SportsNavigationType,
-    contentType: SportsContentType,
-    sportUiState: SportsUiState,
-    viewModel: SportsViewModel,
-    onTabPressed: ((MailboxType) -> Unit),
-    onEmailCardPressed: (Email) -> Unit,
-    modifier: Modifier = Modifier,
-){
-    Scaffold(
-        topBar = {
-            SportsAppBar(
-                isShowingListPage = sportUiState.isShowingListPage,
-                onBackButtonClick = { viewModel.navigateToListPage() },
-            )
-        }
-    ) { innerPadding ->
-        if (sportUiState.isShowingListPage) {
-            SportsList(
-                sports = sportUiState.sportsList,
-                onClick = {
-                    viewModel.updateCurrentSport(it)
-                    viewModel.navigateToDetailPage()
-                },
-                contentPadding = innerPadding,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        top = dimensionResource(R.dimen.padding_medium),
-                        start = dimensionResource(R.dimen.padding_medium),
-                        end = dimensionResource(R.dimen.padding_medium),
-                    )
-            )
-        } else {
-            SportsDetail(
-                selectedSport = sportUiState.currentSport,
-                contentPadding = innerPadding,
-                onBackPressed = {
-                    viewModel.navigateToListPage()
-                }
-            )
-        }
-    }
+//    }
 }
 
 /**
@@ -314,20 +156,23 @@ private fun SportsAppContent(
 fun SportsAppBar(
     onBackButtonClick: () -> Unit,
     isShowingListPage: Boolean,
+    windowSize: WindowWidthSizeClass,
     modifier: Modifier = Modifier
 ) {
+    val isShowingDetailPage = windowSize != WindowWidthSizeClass.Expanded && !isShowingListPage
     TopAppBar(
         title = {
             Text(
                 text =
-                if (!isShowingListPage) {
+                if (isShowingDetailPage) {
                     stringResource(R.string.detail_fragment_label)
                 } else {
                     stringResource(R.string.list_fragment_label)
-                }
+                },
+                fontWeight = FontWeight.Bold
             )
         },
-        navigationIcon = if (!isShowingListPage) {
+        navigationIcon = if (isShowingDetailPage) {
             {
                 IconButton(onClick = onBackButtonClick) {
                     Icon(
@@ -435,7 +280,7 @@ private fun SportsList(
     LazyColumn(
         contentPadding = contentPadding,
         verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_medium)),
-        modifier = modifier,
+        modifier = modifier.padding(top = dimensionResource(R.dimen.padding_medium)),
     ) {
         items(sports, key = { sport -> sport.id }) { sport ->
             SportsListItem(
@@ -443,61 +288,6 @@ private fun SportsList(
                 onItemClick = onClick
             )
         }
-    }
-}
-
-@Composable
-private fun NavigationDrawerContent(
-    selectedDestination: MailboxType,
-    onTabPressed: ((MailboxType) -> Unit),
-    navigationItemContentList: List<NavigationItemContent>,
-    modifier: Modifier = Modifier
-) {
-    Column(modifier = modifier) {
-        NavigationDrawerHeader(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(dimensionResource(R.dimen.profile_image_padding)),
-        )
-        for (navItem in navigationItemContentList) {
-            NavigationDrawerItem(
-                selected = selectedDestination == navItem.mailboxType,
-                label = {
-                    Text(
-                        text = navItem.text,
-                        modifier = Modifier.padding(horizontal = dimensionResource(R.dimen.drawer_padding_header))
-                    )
-                },
-                icon = {
-                    Icon(
-                        imageVector = navItem.icon,
-                        contentDescription = navItem.text
-                    )
-                },
-                colors = NavigationDrawerItemDefaults.colors(
-                    unselectedContainerColor = Color.Transparent
-                ),
-                onClick = { onTabPressed(navItem.mailboxType) }
-            )
-        }
-    }
-}
-
-@Composable
-private fun NavigationDrawerHeader(
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier,
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        ReplyLogo(modifier = Modifier.size(dimensionResource(R.dimen.reply_logo_size)))
-        ReplyProfileImage(
-            drawableResource = LocalAccountsDataProvider.defaultAccount.avatar,
-            description = stringResource(id = R.string.profile),
-            modifier = Modifier.size(dimensionResource(R.dimen.profile_image_size))
-        )
     }
 }
 
@@ -587,13 +377,63 @@ private fun SportsDetail(
     }
 }
 
+@Composable
+private fun SportsListAndDetail(
+    sports: List<Sport>,
+    selectedSport: Sport,
+    onClick: (Sport) -> Unit,
+    onBackPressed: () -> Unit,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    windowSize: WindowWidthSizeClass,
+    viewModel: SportsViewModel,
+    uiState: SportsUiState,
+) {
+    var contentPadding = contentPadding
+
+    Row(
+        modifier = modifier
+    ) {
+        Scaffold(
+            topBar = {
+                SportsAppBar(
+                    isShowingListPage = uiState.isShowingListPage,
+                    onBackButtonClick = { viewModel.navigateToListPage() },
+                    windowSize = windowSize
+                )
+            }
+        ) { innerPadding ->
+            contentPadding = innerPadding
+            SportsList(
+                sports = sports,
+                onClick = onClick,
+                contentPadding = PaddingValues(
+                    top = contentPadding.calculateTopPadding(),
+                ),
+                modifier = Modifier
+                    .weight(2f)
+                    .padding(horizontal = dimensionResource(R.dimen.padding_medium))
+            )
+        }
+        SportsDetail(
+            selectedSport = selectedSport,
+            modifier = Modifier.weight(3f),
+            contentPadding = PaddingValues(
+                top = contentPadding.calculateTopPadding(),
+            ),
+            onBackPressed = onBackPressed,
+        )
+    }
+//    }
+}
+
 @Preview
 @Composable
 fun SportsListItemPreview() {
     SportsTheme {
         SportsListItem(
             sport = LocalSportsDataProvider.defaultSport,
-            onItemClick = {},
+            onItemClick = {}
         )
     }
 }
@@ -610,11 +450,32 @@ fun SportsListPreview() {
         }
     }
 }
-private data class NavigationItemContent(
-    val mailboxType: MailboxType,
-    val icon: ImageVector,
-    val text: String
+
+@Preview(
+    showBackground = true,
+    device = Devices.PIXEL_4,
+    widthDp = 700
 )
-enum class MailboxType {
-    Inbox, Drafts, Sent, Spam
+@Composable
+fun SportsListAndDetailsPreview() {
+    SportsTheme {
+        Surface {
+            SportsListAndDetail(
+                sports = LocalSportsDataProvider.getSportsData(),
+                selectedSport = LocalSportsDataProvider.getSportsData().getOrElse(0) {
+                    LocalSportsDataProvider.defaultSport
+                },
+                onClick = {},
+                onBackPressed = {},
+                windowSize = WindowWidthSizeClass.Medium,
+                viewModel = SportsViewModel(),
+                uiState = SportsUiState(
+                    sportsList = LocalSportsDataProvider.getSportsData(),
+                    currentSport = LocalSportsDataProvider.getSportsData().getOrElse(0) {
+                        LocalSportsDataProvider.defaultSport
+                    }
+                )
+            )
+        }
+    }
 }
