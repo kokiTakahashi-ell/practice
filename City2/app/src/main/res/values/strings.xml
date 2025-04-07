@@ -1,47 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (C) 2023 The Android Open Source Project
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     https://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
 <resources>
-    <string name="app_name">City</string>
-    <string name="recommendation_1_name">おすすめの場所1</string>
-    <string name="recommendation_1_description">これはおすすめの場所1の説明です。ここでは美しい景色と豊かな自然を楽しむことができます。家族連れやカップルに最適な場所です。</string>
-    <string name="recommendation_2_name">おすすめの場所2</string>
-    <string name="recommendation_2_description">これはおすすめの場所2の説明です。歴史的な建造物が多く、文化的な体験ができます。観光客に人気のスポットです。</string>
-    <string name="recommendation_3_name">おすすめの場所3</string>
-    <string name="recommendation_3_description">これはおすすめの場所3の説明です。地元の料理を楽しむことができるレストランがたくさんあります。グルメな方におすすめです。</string>
-    <string name="recommendation_4_name">おすすめの場所4</string>
-    <string name="recommendation_4_description">これはおすすめの場所4の説明です。広大な公園があり、ピクニックや散歩に最適です。リラックスしたい方にぴったりです。</string>
-    <string name="recommendation_5_name">おすすめの場所5</string>
-    <string name="recommendation_5_description">これはおすすめの場所5の説明です。ショッピングモールがあり、最新のファッションや雑貨を購入できます。買い物好きにはたまらない場所です。</string>
-    <string name="recommendation_6_name">おすすめの場所6</string>
-    <string name="recommendation_6_description">これはおすすめの場所6の説明です。美術館や博物館があり、芸術や歴史に触れることができます。知識を深めたい方におすすめです。</string>
-    <string name="recommendation_7_name">おすすめの場所7</string>
-    <string name="recommendation_7_description">これはおすすめの場所7の説明です。夜景が美しく、ロマンチックな雰囲気を楽しむことができます。デートスポットとして人気です。</string>
-    <string name="recommendation_8_name">おすすめの場所8</string>
-    <string name="recommendation_8_description">これはおすすめの場所8の説明です。スポーツ施設が充実しており、アクティブに過ごすことができます。運動好きには最適です。</string>
-    <string name="recommendation_9_name">おすすめの場所9</string>
-    <string name="recommendation_9_description">これはおすすめの場所9の説明です。温泉があり、リラックスして疲れを癒すことができます。リフレッシュしたい方におすすめです。</string>
-    <string name="recommendation_10_name">おすすめの場所10</string>
-    <string name="recommendation_10_description">これはおすすめの場所10の説明です。海が近く、ビーチでのんびり過ごすことができます。夏のレジャーにぴったりです。</string>
-    <string name="recommendation_11_name">おすすめの場所11</string>
-    <string name="recommendation_11_description">これはおすすめの場所11の説明です。山登りが楽しめる場所で、自然の中でアクティブに過ごすことができます。アウトドア好きにおすすめです。</string>
-    <string name="recommendation_12_name">おすすめの場所12</string>
-    <string name="recommendation_12_description">これはおすすめの場所12の説明です。動物園があり、さまざまな動物を見ることができます。子供連れに最適な場所です。</string>
-    <string name="recommendation_13_name">おすすめの場所13</string>
-    <string name="recommendation_13_description">これはおすすめの場所13の説明です。植物園があり、珍しい植物を観察することができます。自然が好きな方におすすめです。</string>
-    <string name="recommendation_14_name">おすすめの場所14</string>
-    <string name="recommendation_14_description">これはおすすめの場所14の説明です。映画館があり、最新の映画を楽しむことができます。映画好きにはたまらない場所です。</string>
-    <string name="recommendation_15_name">おすすめの場所15</string>
-    <string name="recommendation_15_description">これはおすすめの場所15の説明です。カフェがたくさんあり、美味しいコーヒーやスイーツを楽しむことができます。リラックスしたい方におすすめです。</string>
-    <string name="recommendation_16_name">おすすめの場所16</string>
-    <string name="recommendation_16_description">これはおすすめの場所16の説明です。図書館があり、静かな環境で読書を楽しむことができます。知識を深めたい方に最適です。</string>
-    <string name="recommendation_17_name">おすすめの場所17</string>
-    <string name="recommendation_17_description">これはおすすめの場所17の説明です。音楽フェスティバルが開催される場所で、ライブ音楽を楽しむことができます。音楽好きにはたまらない場所です。</string>
-    <string name="recommendation_18_name">おすすめの場所18</string>
-    <string name="recommendation_18_description">これはおすすめの場所18の説明です。アートギャラリーがあり、現代アートを鑑賞することができます。芸術に興味がある方におすすめです。</string>
-    <string name="recommendation_19_name">おすすめの場所19</string>
-    <string name="recommendation_19_description">これはおすすめの場所19の説明です。スポーツイベントが開催される場所で、さまざまなスポーツを観戦することができます。スポーツファンに最適です。</string>
-    <string name="recommendation_20_name">おすすめの場所20</string>
-    <string name="recommendation_20_description">これはおすすめの場所20の説明です。アウトドアアクティビティが豊富で、キャンプやハイキングを楽しむことができます。自然を満喫したい方におすすめです。</string>
-
-
+    <string name="app_name">Reply</string>
     <string name="navigation_drawer">Navigation Drawer</string>
     <string name="navigation_rail">Navigation Rail</string>
     <string name="navigation_bottom">Navigation Bottom</string>
@@ -201,9 +175,44 @@
         link.
     </string>
     <string name="email_11_time">3 hours ago</string>
-    <string name="category_shopping_name">Shopping</string>
-    <string name="category_Park_name">Park</string>
-    <string name="category_restaurant_name">restaurant</string>
-
-
+    <string name="recommendation_1_name">おすすめの場所1</string>
+    <string name="recommendation_1_description">これはおすすめの場所1の説明です。ここでは美しい景色と豊かな自然を楽しむことができます。家族連れやカップルに最適な場所です。</string>
+    <string name="recommendation_2_name">おすすめの場所2</string>
+    <string name="recommendation_2_description">これはおすすめの場所2の説明です。歴史的な建造物が多く、文化的な体験ができます。観光客に人気のスポットです。</string>
+    <string name="recommendation_3_name">おすすめの場所3</string>
+    <string name="recommendation_3_description">これはおすすめの場所3の説明です。地元の料理を楽しむことができるレストランがたくさんあります。グルメな方におすすめです。</string>
+    <string name="recommendation_4_name">おすすめの場所4</string>
+    <string name="recommendation_4_description">これはおすすめの場所4の説明です。広大な公園があり、ピクニックや散歩に最適です。リラックスしたい方にぴったりです。</string>
+    <string name="recommendation_5_name">おすすめの場所5</string>
+    <string name="recommendation_5_description">これはおすすめの場所5の説明です。ショッピングモールがあり、最新のファッションや雑貨を購入できます。買い物好きにはたまらない場所です。</string>
+    <string name="recommendation_6_name">おすすめの場所6</string>
+    <string name="recommendation_6_description">これはおすすめの場所6の説明です。美術館や博物館があり、芸術や歴史に触れることができます。知識を深めたい方におすすめです。</string>
+    <string name="recommendation_7_name">おすすめの場所7</string>
+    <string name="recommendation_7_description">これはおすすめの場所7の説明です。夜景が美しく、ロマンチックな雰囲気を楽しむことができます。デートスポットとして人気です。</string>
+    <string name="recommendation_8_name">おすすめの場所8</string>
+    <string name="recommendation_8_description">これはおすすめの場所8の説明です。スポーツ施設が充実しており、アクティブに過ごすことができます。運動好きには最適です。</string>
+    <string name="recommendation_9_name">おすすめの場所9</string>
+    <string name="recommendation_9_description">これはおすすめの場所9の説明です。温泉があり、リラックスして疲れを癒すことができます。リフレッシュしたい方におすすめです。</string>
+    <string name="recommendation_10_name">おすすめの場所10</string>
+    <string name="recommendation_10_description">これはおすすめの場所10の説明です。海が近く、ビーチでのんびり過ごすことができます。夏のレジャーにぴったりです。</string>
+    <string name="recommendation_11_name">おすすめの場所11</string>
+    <string name="recommendation_11_description">これはおすすめの場所11の説明です。山登りが楽しめる場所で、自然の中でアクティブに過ごすことができます。アウトドア好きにおすすめです。</string>
+    <string name="recommendation_12_name">おすすめの場所12</string>
+    <string name="recommendation_12_description">これはおすすめの場所12の説明です。動物園があり、さまざまな動物を見ることができます。子供連れに最適な場所です。</string>
+    <string name="recommendation_13_name">おすすめの場所13</string>
+    <string name="recommendation_13_description">これはおすすめの場所13の説明です。植物園があり、珍しい植物を観察することができます。自然が好きな方におすすめです。</string>
+    <string name="recommendation_14_name">おすすめの場所14</string>
+    <string name="recommendation_14_description">これはおすすめの場所14の説明です。映画館があり、最新の映画を楽しむことができます。映画好きにはたまらない場所です。</string>
+    <string name="recommendation_15_name">おすすめの場所15</string>
+    <string name="recommendation_15_description">これはおすすめの場所15の説明です。カフェがたくさんあり、美味しいコーヒーやスイーツを楽しむことができます。リラックスしたい方におすすめです。</string>
+    <string name="recommendation_16_name">おすすめの場所16</string>
+    <string name="recommendation_16_description">これはおすすめの場所16の説明です。図書館があり、静かな環境で読書を楽しむことができます。知識を深めたい方に最適です。</string>
+    <string name="recommendation_17_name">おすすめの場所17</string>
+    <string name="recommendation_17_description">これはおすすめの場所17の説明です。音楽フェスティバルが開催される場所で、ライブ音楽を楽しむことができます。音楽好きにはたまらない場所です。</string>
+    <string name="recommendation_18_name">おすすめの場所18</string>
+    <string name="recommendation_18_description">これはおすすめの場所18の説明です。アートギャラリーがあり、現代アートを鑑賞することができます。芸術に興味がある方におすすめです。</string>
+    <string name="recommendation_19_name">おすすめの場所19</string>
+    <string name="recommendation_19_description">これはおすすめの場所19の説明です。スポーツイベントが開催される場所で、さまざまなスポーツを観戦することができます。スポーツファンに最適です。</string>
+    <string name="recommendation_20_name">おすすめの場所20</string>
+    <string name="recommendation_20_description">これはおすすめの場所20の説明です。アウトドアアクティビティが豊富で、キャンプやハイキングを楽しむことができます。自然を満喫したい方におすすめです。</string>
 </resources>

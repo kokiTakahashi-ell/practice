@@ -1,4 +1,19 @@
-package com.example.city
+/*
+ * Copyright (C) 2023 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.example.reply
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -8,12 +23,9 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
@@ -21,16 +33,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.city.ui.CityApp
-import com.example.city.ui.theme.CityTheme
+import com.example.reply.ui.ReplyApp
+import com.example.reply.ui.theme.ReplyTheme
 
 class MainActivity : ComponentActivity() {
+
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
+
         setContent {
-            CityTheme {
+            ReplyTheme {
                 val layoutDirection = LocalLayoutDirection.current
                 Surface (
                     modifier = Modifier
@@ -42,7 +56,7 @@ class MainActivity : ComponentActivity() {
                         )
                 ){
                     val windowSize = calculateWindowSizeClass(this)
-                    CityApp(
+                    ReplyApp(
                         windowSize = windowSize.widthSizeClass,
                     )
                 }
@@ -54,9 +68,9 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun ReplyAppCompactPreview() {
-    CityTheme {
+    ReplyTheme {
         Surface {
-            CityApp(
+            ReplyApp(
                 windowSize = WindowWidthSizeClass.Compact,
             )
         }
@@ -65,20 +79,20 @@ fun ReplyAppCompactPreview() {
 
 @Preview(showBackground = true, widthDp = 700)
 @Composable
-fun CityAppMediumPreview() {
-    CityTheme {
+fun ReplyAppMediumPreview() {
+    ReplyTheme {
         Surface {
-            CityApp(windowSize = WindowWidthSizeClass.Medium)
+            ReplyApp(windowSize = WindowWidthSizeClass.Medium)
         }
     }
 }
 
 @Preview(showBackground = true, widthDp = 1000)
 @Composable
-fun CityAppExpandedPreview() {
-    CityTheme {
+fun ReplyAppExpandedPreview() {
+    ReplyTheme {
         Surface {
-            CityApp(windowSize = WindowWidthSizeClass.Expanded)
+            ReplyApp(windowSize = WindowWidthSizeClass.Expanded)
         }
     }
 }
