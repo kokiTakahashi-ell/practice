@@ -300,8 +300,8 @@ private fun CityBottomNavigationBar(
                 onClick = {
                     onTabPressed(navItem.categoryType)
                     Log.d(TAG, "push")
-                    onMoveToParks()
-                    onMoveToRestaurants()
+//                    onMoveToParks()
+//                    onMoveToRestaurants()
                           },
                 icon = {
                     Icon(

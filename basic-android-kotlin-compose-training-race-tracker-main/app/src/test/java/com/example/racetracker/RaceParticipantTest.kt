@@ -16,13 +16,16 @@
 package com.example.racetracker
 
 import com.example.racetracker.ui.RaceParticipant
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
-import org.junit.Test
 import org.junit.Assert.assertEquals
+import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class RaceParticipantTest {
     private val raceParticipant = RaceParticipant(
         name = "Test",
@@ -41,57 +44,46 @@ class RaceParticipantTest {
         assertEquals(expectedProgress, raceParticipant.currentProgress)
     }
 
-
     @Test
     fun raceParticipant_RaceFinished_ProgressUpdated() = runTest {
         launch { raceParticipant.run() }
+
         advanceTimeBy(raceParticipant.maxProgress * raceParticipant.progressDelayMillis)
         runCurrent()
         assertEquals(100, raceParticipant.currentProgress)
     }
 
     @Test
-    fun raceParticipant_RaceCompletesSuccessfully() = runTest {
-        launch { raceParticipant.run() }
-        advanceTimeBy(raceParticipant.maxProgress * raceParticipant.progressDelayMillis)
+    fun raceParticipant_RacePaused_ProgressUpdated() = runTest {
+        val expectedProgress = 5
+        val racerJob = launch { raceParticipant.run() }
+        advanceTimeBy(expectedProgress * raceParticipant.progressDelayMillis)
         runCurrent()
-        assertEquals(raceParticipant.maxProgress, raceParticipant.currentProgress)
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun raceParticipant_InvalidMaxProgress_ThrowsException() {
-        RaceParticipant(name = "Invalid", maxProgress = 0)
-    }
-
-    @Test(expected = IllegalArgumentException::class)
-    fun raceParticipant_InvalidProgressIncrement_ThrowsException() {
-        RaceParticipant(name = "Invalid", progressIncrement = 0)
+        racerJob.cancelAndJoin()
+        assertEquals(expectedProgress, raceParticipant.currentProgress)
     }
 
     @Test
-    fun raceParticipant_InitialProgressAtMax_NoProgressUpdate() = runTest {
-        val participant = RaceParticipant(
-            name = "Boundary",
-            maxProgress = 100,
-            initialProgress = 100
-        )
-        launch { participant.run() }
-        advanceTimeBy(participant.progressDelayMillis)
-        runCurrent()
-        assertEquals(100, participant.currentProgress) // 進捗は更新されない
+    fun raceParticipant_RacePausedAndResumed_ProgressUpdated() = runTest {
+        val expectedProgress = 5
+
+        repeat(2) {
+            val racerJob = launch { raceParticipant.run() }
+            advanceTimeBy(expectedProgress * raceParticipant.progressDelayMillis)
+            runCurrent()
+            racerJob.cancelAndJoin()
+        }
+
+        assertEquals(expectedProgress * 2, raceParticipant.currentProgress)
     }
 
-    @Test
-    fun raceParticipant_ProgressJustBeforeMax_UpdatesToMax() = runTest {
-        val participant = RaceParticipant(
-            name = "Boundary",
-            maxProgress = 100,
-            initialProgress = 99,
-            progressIncrement = 1
-        )
-        launch { participant.run() }
-        advanceTimeBy(participant.progressDelayMillis)
-        runCurrent()
-        assertEquals(100, participant.currentProgress) // 最大値に達する
+    @Test(expected = IllegalArgumentException::class)
+    fun raceParticipant_ProgressIncrementZero_ExceptionThrown() = runTest {
+        RaceParticipant(name = "Progress Test", progressIncrement = 0)
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun raceParticipant_MaxProgressZero_ExceptionThrown() {
+        RaceParticipant(name = "Progress Test", maxProgress = 0)
     }
 }
