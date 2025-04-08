@@ -43,10 +43,17 @@ fun HomeScreen(
 ) {
     when (marsUiState) {
         is MarsUiState.Loading -> LoadingScreen(modifier = modifier.fillMaxSize())
-        is MarsUiState.Success -> ResultScreen(marsUiState.photos, modifier = modifier.fillMaxWidth())
+        is MarsUiState.Success -> ResultScreen(
+            marsUiState.photos, modifier = modifier.fillMaxWidth()
+        )
         is MarsUiState.Error -> ErrorScreen( modifier = modifier.fillMaxSize())
     }
-}@Composable
+}
+
+/**
+ * The home screen displaying the loading message.
+ */
+@Composable
 fun LoadingScreen(modifier: Modifier = Modifier) {
     Image(
         modifier = modifier.size(200.dp),
@@ -55,6 +62,9 @@ fun LoadingScreen(modifier: Modifier = Modifier) {
     )
 }
 
+/**
+ * The home screen displaying error message with re-attempt button.
+ */
 @Composable
 fun ErrorScreen(modifier: Modifier = Modifier) {
     Column(
@@ -84,8 +94,24 @@ fun ResultScreen(photos: String, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun ResultScreenPreview() {
+fun LoadingScreenPreview() {
     MarsPhotosTheme {
-        ResultScreen(stringResource(R.string.placeholder_result))
+        LoadingScreen()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun ErrorScreenPreview() {
+    MarsPhotosTheme {
+        ErrorScreen()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PhotosGridScreenPreview() {
+    MarsPhotosTheme {
+        ResultScreen(stringResource(R.string.placeholder_success))
     }
 }
