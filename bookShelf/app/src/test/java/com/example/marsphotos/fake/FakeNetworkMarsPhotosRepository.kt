@@ -16,10 +16,12 @@
 package com.example.marsphotos.fake
 
 import com.example.marsphotos.data.MarsPhotosRepository
-import com.example.marsphotos.model.MarsPhoto
+import com.example.marsphotos.model.GoogleBooksResponse
+import retrofit2.http.Query
 
 class FakeNetworkMarsPhotosRepository : MarsPhotosRepository{
-    override suspend fun getMarsPhotos(): List<MarsPhoto> {
-        return FakeDataSource.photosList
+    override suspend fun getBooks(query: String): GoogleBooksResponse {
+        return FakeDataSource.googleBooksResponse
     }
+
 }

@@ -15,22 +15,42 @@
  */
 package com.example.marsphotos.fake
 
-import com.example.marsphotos.model.MarsPhoto
+import com.example.marsphotos.fake.FakeDataSource.booksList
+import com.example.marsphotos.fake.FakeDataSource.thumbnailOne
+import com.example.marsphotos.fake.FakeDataSource.thumbnailTwo
+import com.example.marsphotos.model.BookItem
+import com.example.marsphotos.model.GoogleBooksResponse
+import com.example.marsphotos.model.ImageLinks
+import com.example.marsphotos.model.VolumeInfo
+
 
 object FakeDataSource {
 
-    private const val idOne = "img1"
-    private const val idTwo = "img2"
-    private const val imgOne = "url.one"
-    private const val imgTwo = "url.two"
-    val photosList = listOf(
-        MarsPhoto(
+    private const val idOne = "book1"
+    private const val idTwo = "book2"
+    private const val thumbnailOne = "url.one"
+    private const val thumbnailTwo = "url.two"
+
+    val booksList = listOf(
+        BookItem(
             id = idOne,
-            imgSrc = imgOne
+            volumeInfo = VolumeInfo(
+                imageLinks = ImageLinks(
+                    thumbnail = thumbnailOne
+                )
+            )
         ),
-        MarsPhoto(
+        BookItem(
             id = idTwo,
-            imgSrc = imgTwo
+            volumeInfo = VolumeInfo(
+                imageLinks = ImageLinks(
+                    thumbnail = thumbnailTwo
+                )
+            )
         )
+    )
+
+    val googleBooksResponse = GoogleBooksResponse(
+        items = booksList
     )
 }

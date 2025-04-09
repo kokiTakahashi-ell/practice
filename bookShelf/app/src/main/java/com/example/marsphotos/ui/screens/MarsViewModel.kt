@@ -15,6 +15,7 @@
  */
 package com.example.marsphotos.ui.screens
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -26,16 +27,16 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.marsphotos.MarsPhotosApplication
 import com.example.marsphotos.data.MarsPhotosRepository
-import com.example.marsphotos.model.MarsPhoto
+import com.example.marsphotos.model.GoogleBooksResponse
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.io.IOException
-
+val TAG = "MarsViewModel"
 /**
  * UI state for the Home screen
  */
 sealed interface MarsUiState {
-    data class Success(val photos: List<MarsPhoto>) : MarsUiState
+    data class Success(val photos: GoogleBooksResponse) : MarsUiState
     object Error : MarsUiState
     object Loading : MarsUiState
 }
@@ -60,12 +61,14 @@ class MarsViewModel(private val marsPhotosRepository: MarsPhotosRepository) : Vi
         viewModelScope.launch {
             marsUiState = MarsUiState.Loading
             marsUiState = try {
-                MarsUiState.Success(marsPhotosRepository.getMarsPhotos())
+                MarsUiState.Success(marsPhotosRepository.getBooks(query = "jazz"))
             } catch (e: IOException) {
                 MarsUiState.Error
+                Log.d(TAG, "IOException: ${e.message}")
             } catch (e: HttpException) {
                 MarsUiState.Error
-            }
+                Log.d(TAG, "IOException: ${e.message}")
+            } as MarsUiState
         }
     }
 

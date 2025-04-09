@@ -30,6 +30,7 @@ class NetworkMarsRepositoryTest {
             val repository = NetworkMarsPhotosRepository(
                 marsApiService = FakeMarsApiService()
             )
-            assertEquals(FakeDataSource.photosList, repository.getMarsPhotos())
+            val query = "testQuery" // 適切なクエリ文字列を指定
+            assertEquals(FakeDataSource.googleBooksResponse, repository.getBooks(query))
         }
 }

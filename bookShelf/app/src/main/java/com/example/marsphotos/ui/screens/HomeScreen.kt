@@ -15,6 +15,8 @@
  */
 package com.example.marsphotos.ui.screens
 
+import android.R.attr.contentDescription
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -44,7 +46,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.marsphotos.R
-import com.example.marsphotos.model.MarsPhoto
+import com.example.marsphotos.model.BookItem
+import com.example.marsphotos.model.GoogleBooksResponse
 import com.example.marsphotos.ui.theme.MarsPhotosTheme
 
 @Composable
@@ -100,7 +103,7 @@ fun ErrorScreen(retryAction: () -> Unit, modifier: Modifier = Modifier) {
  */
 @Composable
 fun PhotosGridScreen(
-    photos: List<MarsPhoto>,
+    books: GoogleBooksResponse,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
 ) {
@@ -109,27 +112,29 @@ fun PhotosGridScreen(
         modifier = modifier.padding(horizontal = 4.dp),
         contentPadding = contentPadding,
     ) {
-        items(items = photos, key = { photo -> photo.id }) { photo ->
+//        items(books.items?.filter { it.volumeInfo.imageLinks?.thumbnail != null } ?: emptyList()) { book ->
+        items(books.items ?: emptyList()) { book ->
+            Log.d("PhotosGridScreen", "Book imgURL: ${book.volumeInfo.imageLinks?.thumbnail}")
             MarsPhotoCard(
-                photo,
+                bookItem = book,
                 modifier = Modifier
                     .padding(4.dp)
                     .fillMaxWidth()
-                    .aspectRatio(1.5f)
             )
         }
     }
 }
 
 @Composable
-fun MarsPhotoCard(photo: MarsPhoto, modifier: Modifier = Modifier) {
+fun MarsPhotoCard(bookItem: BookItem, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier,
         shape = MaterialTheme.shapes.medium,
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
+        val imageUrl = bookItem.volumeInfo.imageLinks?.thumbnail?.replace("http://", "https://")
         AsyncImage(
-            model = ImageRequest.Builder(context = LocalContext.current).data(photo.imgSrc)
+            model = ImageRequest.Builder(context = LocalContext.current).data(imageUrl)
                 .crossfade(true).build(),
             error = painterResource(R.drawable.ic_broken_image),
             placeholder = painterResource(R.drawable.loading_img),
@@ -156,11 +161,11 @@ fun ErrorScreenPreview() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PhotosGridScreenPreview() {
-    MarsPhotosTheme {
-        val mockData = List(10) { MarsPhoto("$it", "") }
-        PhotosGridScreen(mockData)
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PhotosGridScreenPreview() {
+//    MarsPhotosTheme {
+//        val mockData = List(10) { GoogleBooksResponse("$it", "") }
+//        PhotosGridScreen(mockData)
+//    }
+//}

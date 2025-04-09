@@ -22,9 +22,24 @@ import kotlinx.serialization.Serializable
 /**
  * This data class defines a Mars photo which includes an ID, and the image URL.
  */
+
 @Serializable
-data class MarsPhoto(
+data class GoogleBooksResponse(
+    val items: List<BookItem>?
+)
+
+@Serializable
+data class BookItem(
     val id: String,
-    @SerialName(value = "img_src")
-    val imgSrc: String
+    val volumeInfo: VolumeInfo
+)
+
+@Serializable
+data class VolumeInfo(
+    val imageLinks: ImageLinks? = null,
+)
+
+@Serializable
+data class ImageLinks(
+    val thumbnail: String? // thumbnailキーを取得するためのプロパティ
 )

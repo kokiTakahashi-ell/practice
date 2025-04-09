@@ -15,11 +15,13 @@
  */
 package com.example.marsphotos.fake
 
-import com.example.marsphotos.model.MarsPhoto
+import com.example.marsphotos.model.BookItem
+import com.example.marsphotos.model.GoogleBooksResponse
 import com.example.marsphotos.network.MarsApiService
+import retrofit2.http.Query
 
 class FakeMarsApiService : MarsApiService {
-    override suspend fun getPhotos(): List<MarsPhoto> {
-        return FakeDataSource.photosList
+    override suspend fun getBooks(query: String, maxResults: Int): GoogleBooksResponse {
+        return FakeDataSource.googleBooksResponse
     }
 }

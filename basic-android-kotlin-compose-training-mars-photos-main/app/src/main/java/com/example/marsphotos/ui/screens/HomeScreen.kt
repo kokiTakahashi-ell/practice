@@ -15,6 +15,7 @@
  */
 package com.example.marsphotos.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -110,6 +111,7 @@ fun PhotosGridScreen(
         contentPadding = contentPadding,
     ) {
         items(items = photos, key = { photo -> photo.id }) { photo ->
+            Log.d("TAG", "Photo: ${photo.imgSrc}")
             MarsPhotoCard(
                 photo,
                 modifier = Modifier

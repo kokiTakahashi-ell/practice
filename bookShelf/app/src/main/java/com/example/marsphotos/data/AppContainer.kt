@@ -35,18 +35,24 @@ interface AppContainer {
  */
 class DefaultAppContainer : AppContainer {
 //    private val baseUrl = "https://android-kotlin-fun-mars-server.appspot.com/"
-    private val baseUrl = "https://android-kotlin-fun-mars-server.appspot.com/amphibians/"
+//    private val baseUrl = "https://android-kotlin-fun-mars-server.appspot.com/"
+    private val baseUrl = "https://www.googleapis.com/books/v1/" // Google Books APIのベースURL
     /**
+     *
      * Use the Retrofit builder to build a retrofit object using a kotlinx.serialization converter
      */
+    //サービスのためのインスタンスの生成
     private val retrofit: Retrofit = Retrofit.Builder()
-        .addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
+        .addConverterFactory(Json{
+            ignoreUnknownKeys = true // 不明なキーを無視する
+        }.asConverterFactory("application/json".toMediaType()))
         .baseUrl(baseUrl)
         .build()
 
     /**
      * Retrofit service object for creating api calls
      */
+    //サービスの作成とAPIのエンドポイントの呼び出し
     private val retrofitService: MarsApiService by lazy {
         retrofit.create(MarsApiService::class.java)
     }
@@ -54,6 +60,7 @@ class DefaultAppContainer : AppContainer {
     /**
      * DI implementation for Mars photos repository
      */
+    //ViewModelなどの他のコンポーネントにデータを提供するためのプロパティ
     override val marsPhotosRepository: MarsPhotosRepository by lazy {
         NetworkMarsPhotosRepository(retrofitService)
     }
