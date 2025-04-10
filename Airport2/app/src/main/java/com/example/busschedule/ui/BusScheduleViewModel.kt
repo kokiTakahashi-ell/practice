@@ -21,26 +21,33 @@ import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.AP
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.busschedule.BusScheduleApplication
-import com.example.busschedule.data.BusSchedule
-import com.example.busschedule.data.BusScheduleDao
+import com.example.busschedule.data.airport.Airport
+import com.example.busschedule.data.airport.AirportDao
+import com.example.busschedule.data.bus.BusSchedule
+import com.example.busschedule.data.bus.BusScheduleDao
 import kotlinx.coroutines.flow.Flow
 
-/*
- * View model for Bus Schedule
- * contains methods to access Room DB through [busScheduleDao]
- */
-class BusScheduleViewModel(private val busScheduleDao: BusScheduleDao): ViewModel() {
-    // Get full bus schedule from Room DB
+
+class BusScheduleViewModel(private val busScheduleDao: BusScheduleDao, private val airportDao: AirportDao): ViewModel() {
+    //    fun getScheduleFor(stopName: String): Flow<List<BusSchedule>> =
+    //        busScheduleDao.getByStopName(stopName)
+
+
+    //favorite
     fun getFullSchedule(): Flow<List<BusSchedule>> = busScheduleDao.getAll()
-    // Get bus schedule based on the stop name from Room DB
-    fun getScheduleFor(stopName: String): Flow<List<BusSchedule>> =
-        busScheduleDao.getByStopName(stopName)
+    suspend fun insertSchedule(busSchedule: BusSchedule) = busScheduleDao.insert(busSchedule)
+    suspend fun deleteSchedule(busSchedule: BusSchedule) = busScheduleDao.delete(busSchedule)
+    suspend fun updateSchedule(busSchedule: BusSchedule) = busScheduleDao.update(busSchedule)
+
+    //Airport
+    fun getAllAirports(keyword: String): Flow<List<Airport>> = airportDao.getSearch(keyword = keyword)
+    fun getIataAirport(departure: String): Flow<List<Airport>> = airportDao.getByIataCode(depart = departure)
 
     companion object {
         val factory : ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as BusScheduleApplication)
-                BusScheduleViewModel(application.database.busScheduleDao())
+                BusScheduleViewModel(application.database.busScheduleDao(), application.airportDatabase.airportDao())
             }
         }
     }

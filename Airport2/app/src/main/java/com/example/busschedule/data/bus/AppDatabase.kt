@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.busschedule.data
+package com.example.busschedule.data.bus
 
 import android.content.Context
 import androidx.room.Database
@@ -36,8 +36,6 @@ abstract class AppDatabase: RoomDatabase() {
                     "app_database"
                 )
                     .createFromAsset("database/bus_schedule.db")
-                    // Wipes and rebuilds instead of migrating if no Migration object.
-                    // Migration is not part of this codelab.
                     .fallbackToDestructiveMigration()
                     .build()
                     .also {

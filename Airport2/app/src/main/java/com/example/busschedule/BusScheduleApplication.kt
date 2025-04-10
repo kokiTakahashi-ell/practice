@@ -16,8 +16,10 @@
 package com.example.busschedule
 
 import android.app.Application
-import com.example.busschedule.data.AppDatabase
+import com.example.busschedule.data.airport.AirportDatabase
+import com.example.busschedule.data.bus.AppDatabase
 
 class BusScheduleApplication: Application() {
     val database: AppDatabase by lazy { AppDatabase.getDatabase(this) }
+    val airportDatabase: AirportDatabase by lazy { AirportDatabase.getDatabase(this) }
 }

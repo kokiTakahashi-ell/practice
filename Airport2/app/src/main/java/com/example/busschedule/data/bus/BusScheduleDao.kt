@@ -13,32 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.busschedule.data
+package com.example.busschedule.data.bus
 
 import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
-/**
- * Provides access to read/write operations on the schedule table.
- * Used by the view models to format the query results for use in the UI.
- */
 @Dao
 interface BusScheduleDao {
+    @Insert
+    suspend fun insert(busSchedule: BusSchedule)
+    @Delete
+    suspend fun delete(busSchedule: BusSchedule)
+    @Update
+    suspend fun update(busSchedule: BusSchedule)
+
     @Query(
         """
-        SELECT * FROM schedule 
-        ORDER BY arrival_time ASC    
+        SELECT * FROM favorite    
         """
     )
     fun getAll(): Flow<List<BusSchedule>>
-
-    @Query(
-        """
-        SELECT * FROM schedule 
-        WHERE stop_name = :stopName 
-        ORDER BY arrival_time ASC 
-        """
-    )
-    fun getByStopName(stopName: String): Flow<List<BusSchedule>>
 }

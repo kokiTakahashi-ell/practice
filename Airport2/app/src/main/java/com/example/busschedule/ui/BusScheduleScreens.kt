@@ -59,7 +59,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.busschedule.R
-import com.example.busschedule.data.BusSchedule
+import com.example.busschedule.data.bus.BusSchedule
 import com.example.busschedule.ui.theme.BusScheduleTheme
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -79,13 +79,13 @@ fun BusScheduleApp(
     var topAppBarTitle by remember { mutableStateOf(fullScheduleTitle) }
     val fullSchedule by viewModel.getFullSchedule().collectAsState(emptyList())
     val onBackHandler = {
-        topAppBarTitle = fullScheduleTitle
+        topAppBarTitle = fullScheduleTitle//この変数を変えるとタイトルが変わる
         navController.navigateUp()
     }
 
     Scaffold(
         topBar = {
-            BusScheduleTopAppBar(
+            BusScheduleTopAppBar(//ここをいじって上のbar部分を変更する　検索バーの追加と監視を行う　viewmodel側で監視
                 title = topAppBarTitle,
                 canNavigateBack = navController.previousBackStackEntry != null,
                 onBackClick = { onBackHandler() }
@@ -205,12 +205,6 @@ fun BusScheduleScreen(
     }
 }
 
-/*
- * Composable for BusScheduleDetails which show list of bus schedule
- * When [onScheduleClick] is null, [stopName] is replaced with placeholder
- * as it is assumed [stopName]s are the same as shown
- * in the list heading display in [BusScheduleScreen]
- */
 @Composable
 fun BusScheduleDetails(
     busSchedules: List<BusSchedule>,
@@ -309,7 +303,7 @@ fun FullScheduleScreenPreview() {
                 BusSchedule(
                     index,
                     "Main Street",
-                    111111
+                    "111111"
                 )
             },
             onScheduleClick = {}
@@ -327,7 +321,7 @@ fun RouteScheduleScreenPreview() {
                 BusSchedule(
                     index,
                     "Main Street",
-                    111111
+                    "111111"
                 )
             }
         )
