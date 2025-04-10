@@ -42,7 +42,4 @@ class HomeViewModel(itemsRepository: ItemsRepository) : ViewModel() {
     }
 }
 
-/**
- * Ui State for HomeScreen
- */
 data class HomeUiState(val itemList: List<Item> = listOf())
