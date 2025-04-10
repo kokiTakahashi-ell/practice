@@ -11,14 +11,12 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface BusDao {
 
-    @Query("SELECT * from bus_schedule ORDER BY stopName ASC")
+    @Query("SELECT * from Schedule ORDER BY arrival_time ASC")
     fun getAllBus(): Flow<List<BusEntity>>
 
-    @Query("SELECT * from bus_schedule WHERE id = :id")
-    fun getBus(id: Int): Flow<BusEntity>
+    @Query("SELECT * from Schedule WHERE stop_name = :stopName")
+    fun getBus(stopName: String): Flow<List<BusEntity>>
 
-    // Specify the conflict strategy as IGNORE, when the user tries to add an
-    // existing Item into the database Room ignores the conflict.
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(busEntity: BusEntity)
 

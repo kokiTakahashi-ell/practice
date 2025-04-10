@@ -1,13 +1,19 @@
 package com.example.busschedule.data
 
+import androidx.annotation.NonNull
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 
-@Entity(tableName = "bus_schedule")
+@Entity(tableName = "Schedule")
 data class BusEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Int,
+    @NonNull
+    @ColumnInfo(name = "stop_name")
     val stopName: String,
-    val arrivalTime: Int
+    @NonNull
+    @ColumnInfo(name = "arrival_time")
+    val arrivalTimeInMillis: Long
 )

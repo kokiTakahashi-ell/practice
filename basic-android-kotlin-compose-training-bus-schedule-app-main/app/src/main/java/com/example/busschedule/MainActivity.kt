@@ -13,10 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.example.busschedule.data
+package com.example.busschedule
 
-data class BusSchedule(
-    val id: Int,
-    val stopName: String,
-    val arrivalTimeInMillis: Int
-)
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import com.example.busschedule.ui.BusScheduleApp
+import com.example.busschedule.ui.theme.BusScheduleTheme
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            BusScheduleTheme {
+                BusScheduleApp()
+            }
+        }
+    }
+}

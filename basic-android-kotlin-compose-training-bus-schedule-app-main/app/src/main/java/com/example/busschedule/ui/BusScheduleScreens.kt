@@ -59,7 +59,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.busschedule.R
-import com.example.busschedule.data.BusEntity
+import com.example.busschedule.data.BusSchedule
 import com.example.busschedule.ui.theme.BusScheduleTheme
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -72,7 +72,7 @@ enum class BusScheduleScreens {
 
 @Composable
 fun BusScheduleApp(
-    viewModel: BusScheduleViewModel = viewModel(factory = AppViewModelProvider.Factory)
+    viewModel: BusScheduleViewModel = viewModel(factory = BusScheduleViewModel.factory)
 ) {
     val navController = rememberNavController()
     val fullScheduleTitle = stringResource(R.string.full_schedule)
@@ -129,7 +129,7 @@ fun BusScheduleApp(
 
 @Composable
 fun FullScheduleScreen(
-    busSchedules: List<BusEntity>,
+    busSchedules: List<BusSchedule>,
     onScheduleClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
@@ -145,7 +145,7 @@ fun FullScheduleScreen(
 @Composable
 fun RouteScheduleScreen(
     stopName: String,
-    busSchedules: List<BusEntity>,
+    busSchedules: List<BusSchedule>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     onBack: () -> Unit = {}
@@ -161,7 +161,7 @@ fun RouteScheduleScreen(
 
 @Composable
 fun BusScheduleScreen(
-    busSchedules: List<BusEntity>,
+    busSchedules: List<BusSchedule>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     stopName: String? = null,
@@ -213,7 +213,7 @@ fun BusScheduleScreen(
  */
 @Composable
 fun BusScheduleDetails(
-    busSchedules: List<BusEntity>,
+    busSchedules: List<BusSchedule>,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     onScheduleClick: ((String) -> Unit)? = null
@@ -306,7 +306,7 @@ fun FullScheduleScreenPreview() {
     BusScheduleTheme {
         FullScheduleScreen(
             busSchedules = List(3) { index ->
-                BusEntity(
+                BusSchedule(
                     index,
                     "Main Street",
                     111111
@@ -324,7 +324,7 @@ fun RouteScheduleScreenPreview() {
         RouteScheduleScreen(
             stopName = "Main Street",
             busSchedules = List(3) { index ->
-                BusEntity(
+                BusSchedule(
                     index,
                     "Main Street",
                     111111
