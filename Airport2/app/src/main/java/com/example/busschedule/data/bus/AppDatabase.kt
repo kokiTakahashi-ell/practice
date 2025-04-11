@@ -16,9 +16,12 @@
 package com.example.busschedule.data.bus
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+
+var TAG = "AppDatabase"
 
 @Database(entities = arrayOf(BusSchedule::class), version = 1)
 abstract class AppDatabase: RoomDatabase() {
@@ -29,19 +32,20 @@ abstract class AppDatabase: RoomDatabase() {
         private var INSTANCE: AppDatabase? = null
 
         fun getDatabase(context: Context): AppDatabase {
+            Log.d(TAG, "AppDatabase: AppDatabase before return")
             return INSTANCE ?: synchronized(this) {
                 Room.databaseBuilder(
                     context,
                     AppDatabase::class.java,
                     "app_database"
                 )
-                    .createFromAsset("database/bus_schedule.db")
                     .fallbackToDestructiveMigration()
                     .build()
                     .also {
                         INSTANCE = it
                     }
             }
+            Log.d(TAG, "AppDatabase: AppDatabase after return")
         }
     }
 }

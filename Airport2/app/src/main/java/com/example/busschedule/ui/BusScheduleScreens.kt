@@ -15,7 +15,11 @@
  */
 package com.example.busschedule.ui
 
+import android.R.attr.name
+import android.gesture.Prediction
+import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -29,6 +33,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -36,8 +41,10 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,28 +59,34 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.busschedule.R
+import com.example.busschedule.data.airport.Airport
 import com.example.busschedule.data.bus.BusSchedule
 import com.example.busschedule.ui.theme.BusScheduleTheme
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 enum class BusScheduleScreens {
-    FullSchedule,
-    RouteSchedule
+    FavoriteListScreen,
+    AirportListScreen,
+    AirportDetails,
 }
-
+var TAG = "test"
 @Composable
 fun BusScheduleApp(
     viewModel: BusScheduleViewModel = viewModel(factory = BusScheduleViewModel.factory)
 ) {
+    val fixedTitle = stringResource(R.string.fixed_title)
     val navController = rememberNavController()
     val fullScheduleTitle = stringResource(R.string.full_schedule)
     var topAppBarTitle by remember { mutableStateOf(fullScheduleTitle) }
@@ -87,175 +100,285 @@ fun BusScheduleApp(
         topBar = {
             BusScheduleTopAppBar(//ここをいじって上のbar部分を変更する　検索バーの追加と監視を行う　viewmodel側で監視
                 title = topAppBarTitle,
-                canNavigateBack = navController.previousBackStackEntry != null,
-                onBackClick = { onBackHandler() }
+                fixedTitle = fixedTitle,
+                onSearchTextChange = { searchText ->
+                    viewModel.updateSearchText(searchText)
+//                    navController.navigate(BusScheduleScreens.AirportDetails.name)//画面遷移先変更必要
+                },
+                modifier = Modifier,
+                navController = navController
             )
         }
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = BusScheduleScreens.FullSchedule.name
+            startDestination = BusScheduleScreens.FavoriteListScreen.name
         ) {
-            composable(BusScheduleScreens.FullSchedule.name) {
-                FullScheduleScreen(
-                    busSchedules = fullSchedule,
+            composable("AirportListScreen") {
+                val uiState = viewModel.searchUiState.collectAsState().value
+                val selectedAirport = uiState.selectedAirport ?: Airport(
+                    iataCode = "",
+                    name = "",
+                    passengers = 0,
+                    id = 0
+                )//初期値の代入
+                val listAirport = uiState.listAirport
+                AirportListScreen(
+                    stateTitle = "Airport List",
+                    selectedAirport = selectedAirport,
+                    listAirport = listAirport,
                     contentPadding = innerPadding,
-                    onScheduleClick = { busStopName ->
-                        navController.navigate(
-                            "${BusScheduleScreens.RouteSchedule.name}/$busStopName"
-                        )
-                        topAppBarTitle = busStopName
+                    onRegisterFavoriteAirportClick = { departureCode, destinationCode ->
+                        viewModel.viewModelScope.launch {
+                            viewModel.insertFavoriteAirport(departureCode, destinationCode)
+                        }
                     }
                 )
             }
-            val busRouteArgument = "busRoute"
-            composable(
-                route = BusScheduleScreens.RouteSchedule.name + "/{$busRouteArgument}",
-                arguments = listOf(navArgument(busRouteArgument) { type = NavType.StringType })
-            ) { backStackEntry ->
-                val stopName = backStackEntry.arguments?.getString(busRouteArgument)
-                    ?: error("busRouteArgument cannot be null")
-                val routeSchedule by viewModel.getScheduleFor(stopName).collectAsState(emptyList())
-                RouteScheduleScreen(
-                    stopName = stopName,
-                    busSchedules = routeSchedule,
+
+            composable("AirportDetails") {
+                val uiState = viewModel.searchUiState.collectAsState().value
+                val searchingText = uiState.textSearch
+                val airportList = uiState.listAirport
+                val airportDetails by viewModel.getSearchAirports(searchingText).collectAsState(emptyList())
+                AirportDetails(
+                    stateTitle = "Airport Details",
+                    airports = airportDetails,
                     contentPadding = innerPadding,
-                    onBack = { onBackHandler() }
+                    onAirportClick = { clickedAirport ->
+                        viewModel.updateSelectedAirport(
+                            airportDetails.firstOrNull { it == clickedAirport } ?: Airport(
+                                iataCode = "",
+                                name = "",
+                                passengers = 0,
+                                id = 0
+                            )
+                        )
+                        viewModel.updateListAirport(clickedAirport)
+                        navController.navigate(BusScheduleScreens.AirportListScreen.name)
+                    }
+                )
+            }
+
+            composable("FavoriteListScreen") {
+                val favoriteList by viewModel.getFullSchedule().collectAsState(emptyList())
+                Log.d(TAG, "BusScheduleApp: favoriteList: ${favoriteList.size}")
+                FavoriteListScreen(
+                    stateTitle = "Favorite Airports",
+                    listFavorite = favoriteList,
+                    onGetAirportByIataCode = { iataCode ->//iatacodeを元にairport_tableから情報を取得する
+                        var airport: Airport? = null
+                        viewModel.viewModelScope.launch {
+                            viewModel.getIataAirport(iataCode).collect { result ->
+                                airport = result
+                            }
+                        }
+                        airport
+                    },
+                    contentPadding = innerPadding
                 )
             }
         }
     }
 }
 
-@Composable
-fun FullScheduleScreen(
-    busSchedules: List<BusSchedule>,
-    onScheduleClick: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
-) {
-    BusScheduleScreen(
-        busSchedules = busSchedules,
-        onScheduleClick = onScheduleClick,
-        contentPadding = contentPadding,
-        modifier = modifier
-    )
-}
 
 @Composable
-fun RouteScheduleScreen(
-    stopName: String,
-    busSchedules: List<BusSchedule>,
+fun AirportListScreen(
+    stateTitle: String,
+    selectedAirport: Airport,//選択された空港を入れるviewmodelの中のuiStateか変数で
+    listAirport: List<Airport>,//選択された空港以外の空港リスト
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
-    onBack: () -> Unit = {}
+    onRegisterFavoriteAirportClick: ((String, String) -> Unit)? = null//favoriteに登録トリガー
 ) {
-    BackHandler { onBack() }
-    BusScheduleScreen(
-        busSchedules = busSchedules,
-        modifier = modifier,
-        contentPadding = contentPadding,
-        stopName = stopName
-    )
-}
-
-@Composable
-fun BusScheduleScreen(
-    busSchedules: List<BusSchedule>,
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
-    stopName: String? = null,
-    onScheduleClick: ((String) -> Unit)? = null,
-) {
-    val stopNameText = if (stopName == null) {
-        stringResource(R.string.stop_name)
-    } else {
-        "$stopName ${stringResource(R.string.route_stop_name)}"
-    }
-    val layoutDirection = LocalLayoutDirection.current
-    Column(
-        modifier = modifier.padding(
-            start = contentPadding.calculateStartPadding(layoutDirection),
-            end = contentPadding.calculateEndPadding(layoutDirection),
-        )
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    top = contentPadding.calculateTopPadding(),
-                    bottom = dimensionResource(R.dimen.padding_medium),
-                    start = dimensionResource(R.dimen.padding_medium),
-                    end = dimensionResource(R.dimen.padding_medium),
-                )
-            ,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(stopNameText)
-            Text(stringResource(R.string.arrival_time))
-        }
-        Divider()
-        BusScheduleDetails(
-            contentPadding = PaddingValues(
-                bottom = contentPadding.calculateBottomPadding()
-            ),
-            busSchedules = busSchedules,
-            onScheduleClick = onScheduleClick
-        )
-    }
-}
-
-@Composable
-fun BusScheduleDetails(
-    busSchedules: List<BusSchedule>,
-    modifier: Modifier = Modifier,
-    contentPadding: PaddingValues = PaddingValues(0.dp),
-    onScheduleClick: ((String) -> Unit)? = null
-) {
+    Log.d(TAG, "AirportListScreen: selectedAirport: ${selectedAirport.iataCode}")
+    Log.d(TAG, "AirportListScreen: listAirport: ${listAirport.size}")
+    StateTitle(stateTitle)
     LazyColumn(
         modifier = modifier,
         contentPadding = contentPadding,
     ) {
         items(
-            items = busSchedules,
-            key = { busSchedule -> busSchedule.id }
-        ) { schedule ->
+            items = listAirport,
+            key = { airport -> airport.id }
+        ) { airport ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(dimensionResource(R.dimen.padding_medium))
+                    .clickable(enabled = onRegisterFavoriteAirportClick != null) {
+                        onRegisterFavoriteAirportClick?.invoke(airport.iataCode, selectedAirport.iataCode)//タップすると登録される
+                    }
+            ) {
+                Column(
+                    modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
+                ) {
+                    Text(
+                        text = "Depart",
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = selectedAirport.iataCode,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = selectedAirport.name,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+
+                    Text(
+                        text = "Arrive",
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontWeight = FontWeight.Bold
+                        )
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            text = airport.iataCode,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        Text(
+                            text = airport.name,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun FavoriteListScreen(
+    stateTitle: String,
+    listFavorite: List<BusSchedule>, // favorite空港リスト
+    onGetAirportByIataCode: (String) -> Airport?, // iataCodeからAirportを取得する関数
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp)
+) {
+    Log.d(TAG, "FavoriteListScreen: listFavorite: ${listFavorite.size}")//入っていない
+    StateTitle(stateTitle)
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = contentPadding,
+    ) {
+        items(
+            items = listFavorite,
+            key = { favorite -> favorite.id }
+        ) { favorite ->
+            val departureAirport = onGetAirportByIataCode(favorite.departureCode) // 出発地の空港情報を取得
+            val arrivalAirport = onGetAirportByIataCode(favorite.destinationCode) // 到着地の空港情報を取得
+            Log.d(TAG, "FavoriteListScreen: departureAirport: ${departureAirport?.iataCode}")
+            Log.d(TAG, "FavoriteListScreen: arrivalAirport: ${arrivalAirport?.iataCode}")
+
+            if (departureAirport != null && arrivalAirport != null) {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(dimensionResource(R.dimen.padding_medium))
+                ) {
+                    Column(
+                        modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
+                    ) {
+                        Text(
+                            text = "Depart",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "$departureAirport.iataCode",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Text(
+                                text = "$departureAirport.name",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+
+                        Text(
+                            text = "Arrive",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontWeight = FontWeight.Bold
+                            )
+                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = "$arrivalAirport.iataCode",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                            Text(
+                                text = "$arrivalAirport.name",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+@Composable
+fun AirportDetails(
+    stateTitle: String,
+    airports: List<Airport>,
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues = PaddingValues(0.dp),
+    onAirportClick: ((Airport) -> Unit)? = null,
+//    navController: NavController
+) {
+    StateTitle(stateTitle)
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = contentPadding,
+    ) {
+        items(
+            items = airports,
+            key = { airport -> airport.id }
+        ) { airport ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(enabled = onScheduleClick != null) {
-                        onScheduleClick?.invoke(schedule.stopName)
+                    .clickable(enabled = onAirportClick != null) {
+                        onAirportClick?.invoke(airport)
                     }
                     .padding(dimensionResource(R.dimen.padding_medium)),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                if (onScheduleClick == null) {
-                    Text(
-                        text = "--",
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            fontSize = dimensionResource(R.dimen.font_large).value.sp,
-                            fontWeight = FontWeight(300)
-                        ),
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.weight(1f)
-                    )
-                } else {
-                    Text(
-                        text = schedule.stopName,
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            fontSize = dimensionResource(R.dimen.font_large).value.sp,
-                            fontWeight = FontWeight(300)
-                        )
-                    )
-                }
                 Text(
-                    text = SimpleDateFormat("h:mm a", Locale.getDefault())
-                        .format(Date(schedule.arrivalTimeInMillis.toLong() * 1000)),
+                    text = airport.iataCode,
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontSize = dimensionResource(R.dimen.font_large).value.sp,
-                        fontWeight = FontWeight(600)
+                        fontWeight = FontWeight(300)
                     ),
-                    textAlign = TextAlign.End,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(
+                    text = airport.name,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = dimensionResource(R.dimen.font_large).value.sp,
+                        fontWeight = FontWeight(300)
+                    ),
                     modifier = Modifier.weight(2f)
                 )
             }
@@ -263,67 +386,74 @@ fun BusScheduleDetails(
     }
 }
 
+@Composable
+fun StateTitle(title: String){
+    Text(
+        text = title,
+        style = MaterialTheme.typography.bodyLarge.copy(
+            fontSize = dimensionResource(R.dimen.font_large).value.sp,
+            fontWeight = FontWeight(300)
+        ),
+        modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
+    )
+}
+
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BusScheduleTopAppBar(
     title: String,
-    canNavigateBack: Boolean,
-    onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
+    fixedTitle : String,
+    onSearchTextChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+    navController: NavController
 ) {
-    if (canNavigateBack) {
+    var searchText by remember { mutableStateOf("") }//検索バーの文字列を保持する変数
+    LaunchedEffect(searchText) {
+        if (searchText.isEmpty()){
+            navController.navigate(BusScheduleScreens.FavoriteListScreen.name)
+        } else {
+            navController.navigate(BusScheduleScreens.AirportDetails.name)
+        }
+    }
+    Column(modifier = modifier) {
         TopAppBar(
-            title = { Text(title) },
-            navigationIcon = {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = stringResource(
-                            R.string.back
-                        )
-                    )
-                }
-            },
-            modifier = modifier
+            title = { Text(fixedTitle) },
+            modifier = modifier.background(MaterialTheme.colorScheme.primaryContainer)
         )
-    } else {
-        TopAppBar(
-            title = { Text(title) },
-            modifier = modifier
-        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            TextField(
+                value = searchText,
+                onValueChange = { newText ->
+                    searchText = newText
+                    onSearchTextChange(newText)//検索欄の文字列をviewmodelにセット 画面遷移
+                },
+                placeholder = { Text("検索...") },
+                modifier = Modifier.fillMaxWidth(0.9f)
+            )
+//    }
+        }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun FullScheduleScreenPreview() {
-    BusScheduleTheme {
-        FullScheduleScreen(
-            busSchedules = List(3) { index ->
-                BusSchedule(
-                    index,
-                    "Main Street",
-                    "111111"
-                )
-            },
-            onScheduleClick = {}
-        )
-    }
-}
+
 
 @Preview(showBackground = true)
 @Composable
-fun RouteScheduleScreenPreview() {
+fun BusScheduleTopAppBarPreview() {
     BusScheduleTheme {
-        RouteScheduleScreen(
-            stopName = "Main Street",
-            busSchedules = List(3) { index ->
-                BusSchedule(
-                    index,
-                    "Main Street",
-                    "111111"
-                )
-            }
+        BusScheduleTopAppBar(
+            title = "Sample Title",
+            fixedTitle = "Fixed Title",
+            onSearchTextChange = { /* 検索テキスト変更時の処理 */ },
+            navController = rememberNavController()
         )
     }
 }

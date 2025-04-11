@@ -9,6 +9,14 @@ import kotlinx.coroutines.flow.Flow
 interface AirportDao {
     @Update
     suspend fun updateAirport(airport: Airport)
+
+    @Query(
+        """
+    SELECT * FROM airport
+    WHERE iata_code != :iataCode
+    """
+    )
+    fun getAirportsExcluding(iataCode: String): Flow<List<Airport>>
     @Query(
         """
         SELECT * FROM airport 
@@ -21,8 +29,7 @@ interface AirportDao {
         """
     SELECT * FROM airport 
     WHERE iata_code = :depart
-    ORDER BY passengers DESC
     """
     )
-    fun getByIataCode(depart: String): Flow<List<Airport>>
+    fun getByIataCode(depart: String): Flow<Airport>
 }

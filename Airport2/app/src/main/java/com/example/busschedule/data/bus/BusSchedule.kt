@@ -23,8 +23,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "favorite")
 data class BusSchedule(
-    @PrimaryKey
-    val id: Int,
+    @PrimaryKey(autoGenerate = true)
+    val id: Int=0,
     @NonNull
     @ColumnInfo(name = "departure_code")
     val departureCode: String,
