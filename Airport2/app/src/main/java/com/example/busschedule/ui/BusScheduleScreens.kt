@@ -55,6 +55,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -78,6 +79,7 @@ import com.example.busschedule.data.airport.Airport
 import com.example.busschedule.data.bus.BusSchedule
 import com.example.busschedule.ui.theme.BusScheduleTheme
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -134,23 +136,35 @@ fun BusScheduleApp(
                     selectedAirport = selectedAirport,
                     listAirport = listAirport,
                     contentPadding = innerPadding,
-                    onExist = { departureCode, destinationCode ->
+                    isFavorite = { departureCode, destinationCode ->
+                        var exist : Boolean = false
                         viewModel.viewModelScope.launch {
-                            viewModel.existsByFavorite(departureCode, destinationCode)
+                            exist = viewModel.existsByFavorite(departureCode, destinationCode).first()
+                        }
+                        exist
+                    },
+                    onAddFavorite = { departureCode, destinationCode ->
+                        viewModel.viewModelScope.launch {
+                            viewModel.insertFavoriteAirport(departureCode, destinationCode)
+                        }
+                    },
+                    onRemoveFavorite = { departureCode, destinationCode ->
+                        viewModel.viewModelScope.launch {
+                            viewModel.deleteByDepartureAndDestination(departureCode, destinationCode)
                         }
                     },
                     onRegisterFavoriteAirportClick = { departureCode, destinationCode ->
                         viewModel.viewModelScope.launch {
-                            try {
-                                viewModel.insertFavoriteAirport(departureCode, destinationCode)
-                                Log.d("Favorite", "Successfully added: $departureCode -> $destinationCode")
-
-                                val schedules = viewModel.getFullSchedule().first()
-                                Log.d(TAG, "Inserted data: $schedules")
-                            } catch (e: Exception) {
-                                Log.e("Favorite", "Failed to add favorite", e)
-                            }
-//                            viewModel.insertFavoriteAirport(departureCode, destinationCode)
+//                            try {
+//                                viewModel.insertFavoriteAirport(departureCode, destinationCode)
+//                                Log.d("Favorite", "Successfully added: $departureCode -> $destinationCode")
+//
+//                                val schedules = viewModel.getFullSchedule().first()
+//                                Log.d(TAG, "Inserted data: $schedules")
+//                            } catch (e: Exception) {
+//                                Log.e("Favorite", "Failed to add favorite", e)
+//                            }
+                            viewModel.insertFavoriteAirport(departureCode, destinationCode)
                             Log.d(TAG, "BusScheduleApp: insertFavoriteAirport: $departureCode, $destinationCode")
                         }
                     }
@@ -213,22 +227,29 @@ fun BusScheduleApp(
     }
 }
 
-//@Composable
-//fun StarIcon(
-//    onClick: () -> Unit // タップ時の処理
-//) {
-//    var isSelected by remember { mutableStateOf(false) } // 状態を保持
-//    IconButton(onClick = {
-//        isSelected = !isSelected
-//        onClick()
-//    }) {
-//        Icon(
-//            imageVector = if (isSelected) Icons.Filled.Star else Icons.Outlined.Star,
-//            contentDescription = if (isSelected) "Selected Star" else "Unselected Star",
-//            tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-//        )
-//    }
-//}
+@Composable
+fun StarIcon(
+    isFavorite: Boolean, // 初期状態を受け取る
+    onAddFavorite: () -> Unit, // 登録処理
+    onRemoveFavorite: () -> Unit, // 削除処理
+    modifier: Modifier = Modifier
+) {
+    var isSelected by remember { mutableStateOf(isFavorite) } // 初期状態を設定
+    IconButton(onClick = {
+        isSelected = !isSelected
+        if (isSelected) {
+            onAddFavorite() // 登録処理を実行
+        } else {
+            onRemoveFavorite() // 削除処理を実行
+        }
+    }) {
+        Icon(
+            imageVector = if (isSelected) Icons.Filled.Star else Icons.Outlined.Star,
+            contentDescription = if (isSelected) "Selected Star" else "Unselected Star",
+            tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
 
 @Composable
 fun AirportListScreen(
@@ -236,8 +257,10 @@ fun AirportListScreen(
     stateTitle: String,
     selectedAirport: Airport,//選択された空港を入れるviewmodelの中のuiStateか変数で
     listAirport: List<Airport>,//選択された空港以外の空港リスト
-    onExist : ((String, String) -> Unit)? = null,
+    isFavorite : ((String, String) -> Boolean)? = null,
     contentPadding: PaddingValues = PaddingValues(0.dp),
+    onRemoveFavorite: ((String, String) -> Unit)? = null,//favoriteから削除トリガー
+    onAddFavorite: ((String, String) -> Unit)? = null,//favoriteに登録トリガー
     onRegisterFavoriteAirportClick: ((String, String) -> Unit)? = null//favoriteに登録トリガー
 ) {
     Log.d(TAG, "AirportListScreen: selectedAirport: ${selectedAirport.iataCode}")
@@ -265,7 +288,9 @@ fun AirportListScreen(
                         .fillMaxWidth()
                 ){
                     Column(
-                        modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
+                        modifier = Modifier
+                            .padding(dimensionResource(R.dimen.padding_medium))
+                            .weight(0.7f)
                     ) {
                         Text(
                             text = "Depart",
@@ -315,13 +340,14 @@ fun AirportListScreen(
                             )
                         }
                     }
-//                    StarIcon(
-//                        onClick = {
-//                            onRegisterFavoriteAirportClick?.invoke(
-//                                selectedAirport.iataCode,
-//                                airport.iataCode)//タップすると登録される
-//                        } // タップ時の処理を実行
-//                    )
+                    StarIcon(
+                        isFavorite = isFavorite?.invoke(selectedAirport.iataCode, airport.iataCode) ?:false,
+                        onAddFavorite = {onAddFavorite?.invoke(selectedAirport.iataCode, airport.iataCode)},
+                        onRemoveFavorite = {onRemoveFavorite?.invoke(selectedAirport.iataCode, airport.iataCode)},
+                        modifier = modifier
+                            .weight(0.3f)
+                            .align(Alignment.CenterVertically)
+                    )
                 }
             }
         }

@@ -48,4 +48,12 @@ interface BusScheduleDao {
         """
     )
     fun existsByDepartureAndDestination(departure: String, destination: String): Flow<Boolean>
+
+    @Query(
+        """
+    DELETE FROM favorite 
+    WHERE departure_code = :departure AND destination_code = :destination
+    """
+    )
+    suspend fun deleteByDepartureAndDestination(departure: String, destination: String)
 }

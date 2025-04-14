@@ -114,7 +114,9 @@ class BusScheduleViewModel(private val busScheduleDao: BusScheduleDao, private v
     fun existsByFavorite(departure: String, destination: String): Flow<Boolean> =
         busScheduleDao.existsByDepartureAndDestination(departure = departure, destination = destination)
 //    suspend fun insertSchedule(busSchedule: BusSchedule) = busScheduleDao.insert(busSchedule)
-//    suspend fun deleteSchedule(busSchedule: BusSchedule) = busScheduleDao.delete(busSchedule)
+    suspend fun deleteSchedule(busSchedule: BusSchedule) = busScheduleDao.delete(busSchedule)
+    suspend fun deleteByDepartureAndDestination(departure: String, destination: String) =
+        busScheduleDao.deleteByDepartureAndDestination(departure = departure, destination = destination)
 //    suspend fun updateSchedule(busSchedule: BusSchedule) = busScheduleDao.update(busSchedule)
 
     fun deleteDatabase(context: Context, databaseName: String) {
