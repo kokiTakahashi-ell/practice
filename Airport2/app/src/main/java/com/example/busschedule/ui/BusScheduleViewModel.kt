@@ -15,6 +15,8 @@
  */
 package com.example.busschedule.ui
 
+import android.content.Context
+import android.database.sqlite.SQLiteDatabase.deleteDatabase
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -43,22 +45,10 @@ import kotlinx.coroutines.launch
 
 
 class BusScheduleViewModel(private val busScheduleDao: BusScheduleDao, private val airportDao: AirportDao): ViewModel() {
-    //    fun getScheduleFor(stopName: String): Flow<List<BusSchedule>> =
-    //        busScheduleDao.getByStopName(stopName)
 
     private val _searchUiState = MutableStateFlow(DefaultState())
     val searchUiState: StateFlow<DefaultState> = _searchUiState.asStateFlow()
 
-//    val selectedAirport: StateFlow<Airport?> =
-//        getIataAirport().stateIn(
-//            scope = viewModelScope,
-//            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
-//            initialValue = null
-//        )
-
-//    private fun getIataAirport(): Flow<Airport?> {
-//        return getIataAirport().map { it }
-//    }
 
     //入力状態のテキストのUiStateを更新する
     fun updateSearchText(text: String) {
@@ -78,14 +68,14 @@ class BusScheduleViewModel(private val busScheduleDao: BusScheduleDao, private v
 
     fun updateFavoriteAirport() {
         viewModelScope.launch {
-            // `getFullSchedule`で取得したリストを処理
+            // favoriteの全てのリスト取得
             val schedules = getFullSchedule().first()
 
             // 空港情報を格納するリスト
             val departureAirports = mutableListOf<Airport>()
             val destinationAirports = mutableListOf<Airport>()
 
-            // 各スケジュールのdepartureとdestinationを参照して空港情報を取得
+            // 各favoriteのdepartureとdestinationを参照して空港情報を取得
             schedules.forEach { schedule ->
                 val departureAirport = getIataAirport(schedule.departureCode).firstOrNull()
                 val destinationAirport = getIataAirport(schedule.destinationCode).firstOrNull()
@@ -107,6 +97,7 @@ class BusScheduleViewModel(private val busScheduleDao: BusScheduleDao, private v
         }
     }
     suspend fun insertFavoriteAirport(departure: String, destination: String) {
+        Log.d(TAG, "BusScheduleDao: $busScheduleDao")
         try {
             busScheduleDao.insert(busSchedule = BusSchedule(departureCode = departure, destinationCode = destination))
             Log.d(TAG, "insertFavoriteAirport: $departure, $destination")
@@ -120,18 +111,20 @@ class BusScheduleViewModel(private val busScheduleDao: BusScheduleDao, private v
 
     //favorite
     fun getFullSchedule(): Flow<List<BusSchedule>> = busScheduleDao.getAll()
-//    fun getFullSchedule(): Flow<List<BusSchedule>> = flow {
-//        try {
-//            busScheduleDao.getAll()
-//        } catch (e: Exception) {
-//            Log.e("BusScheduleViewModel", "Error fetching full schedule", e)
-//        }
-//    }
     fun existsByFavorite(departure: String, destination: String): Flow<Boolean> =
         busScheduleDao.existsByDepartureAndDestination(departure = departure, destination = destination)
 //    suspend fun insertSchedule(busSchedule: BusSchedule) = busScheduleDao.insert(busSchedule)
 //    suspend fun deleteSchedule(busSchedule: BusSchedule) = busScheduleDao.delete(busSchedule)
 //    suspend fun updateSchedule(busSchedule: BusSchedule) = busScheduleDao.update(busSchedule)
+
+    fun deleteDatabase(context: Context, databaseName: String) {
+        val deleted = context.deleteDatabase(databaseName)
+        if (deleted) {
+            Log.d("Database", "Database $databaseName deleted successfully.")
+        } else {
+            Log.e("Database", "Failed to delete database $databaseName.")
+        }
+    }
 
     //Airport
     fun getSearchAirports(keyword: String): Flow<List<Airport>> = airportDao.getSearch(keyword = keyword)

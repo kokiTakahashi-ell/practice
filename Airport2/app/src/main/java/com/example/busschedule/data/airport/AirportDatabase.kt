@@ -14,7 +14,7 @@ import com.example.busschedule.data.bus.BusScheduleDao
 import kotlinx.coroutines.flow.Flow
 
 var TAG = "AirportDatabase"
-@Database(entities = arrayOf(Airport::class), version = 2)
+@Database(entities = arrayOf(Airport::class), version = 1)
 abstract class AirportDatabase: RoomDatabase() {
     abstract fun airportDao(): AirportDao
 
