@@ -20,7 +20,7 @@ interface AirportDao {
     @Query(
         """
         SELECT * FROM airport 
-        WHERE name LIKE '%' || :keyword || '%' 
+        WHERE name LIKE '%' || :keyword || '%' ORDER BY passengers DESC
         """
     )
     fun getSearch(keyword: String): Flow<List<Airport>>

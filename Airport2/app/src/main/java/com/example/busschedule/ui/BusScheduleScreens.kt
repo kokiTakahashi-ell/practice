@@ -16,6 +16,7 @@
 package com.example.busschedule.ui
 
 import android.R.attr.name
+import android.R.attr.onClick
 import android.gesture.Prediction
 import android.util.Log
 import androidx.activity.compose.BackHandler
@@ -25,6 +26,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,6 +35,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -90,17 +94,15 @@ fun BusScheduleApp(
     val navController = rememberNavController()
     val fullScheduleTitle = stringResource(R.string.full_schedule)
     var topAppBarTitle by remember { mutableStateOf(fullScheduleTitle) }
-    val fullSchedule by viewModel.getFullSchedule().collectAsState(emptyList())
-    val onBackHandler = {
-        topAppBarTitle = fullScheduleTitle//この変数を変えるとタイトルが変わる
-        navController.navigateUp()
-    }
+    val state = viewModel.searchUiState.collectAsState().value
+    val searchText = state.textSearch
 
     Scaffold(
         topBar = {
             BusScheduleTopAppBar(//ここをいじって上のbar部分を変更する　検索バーの追加と監視を行う　viewmodel側で監視
                 title = topAppBarTitle,
                 fixedTitle = fixedTitle,
+                searchText = searchText,
                 onSearchTextChange = { searchText ->
                     viewModel.updateSearchText(searchText)
 //                    navController.navigate(BusScheduleScreens.AirportDetails.name)//画面遷移先変更必要
@@ -115,6 +117,7 @@ fun BusScheduleApp(
             startDestination = BusScheduleScreens.FavoriteListScreen.name
         ) {
             composable("AirportListScreen") {
+//                topAppBarTitle = "Airport List"
                 val uiState = viewModel.searchUiState.collectAsState().value
                 val selectedAirport = uiState.selectedAirport ?: Airport(
                     iataCode = "",
@@ -123,20 +126,34 @@ fun BusScheduleApp(
                     id = 0
                 )//初期値の代入
                 val listAirport = uiState.listAirport
+//                val isSelected by viewModel.existsByFavorite().collectAsState(initialValue = false)
                 AirportListScreen(
                     stateTitle = "Airport List",
                     selectedAirport = selectedAirport,
                     listAirport = listAirport,
                     contentPadding = innerPadding,
+//                    onExist = { departureCode, destinationCode ->
+//                        viewModel.viewModelScope.launch {
+//                            viewModel.existsByFavorite(departureCode, destinationCode)
+//                        }
+//                    },
                     onRegisterFavoriteAirportClick = { departureCode, destinationCode ->
                         viewModel.viewModelScope.launch {
-                            viewModel.insertFavoriteAirport(departureCode, destinationCode)
+                            try {
+                                viewModel.insertFavoriteAirport(departureCode, destinationCode)
+                                Log.d("Favorite", "Successfully added: $departureCode -> $destinationCode")
+                            } catch (e: Exception) {
+                                Log.e("Favorite", "Failed to add favorite", e)
+                            }
+//                            viewModel.insertFavoriteAirport(departureCode, destinationCode)
+                            Log.d(TAG, "BusScheduleApp: insertFavoriteAirport: $departureCode, $destinationCode")
                         }
                     }
                 )
             }
 
             composable("AirportDetails") {
+                topAppBarTitle = "Airport Details"
                 val uiState = viewModel.searchUiState.collectAsState().value
                 val searchingText = uiState.textSearch
                 val airportList = uiState.listAirport
@@ -155,17 +172,27 @@ fun BusScheduleApp(
                             )
                         )
                         viewModel.updateListAirport(clickedAirport)
+//                        viewModel.updateSearchText(clickedAirport.iataCode)//空港名をviewmodelにセット
+                        topAppBarTitle = "Flight from ${clickedAirport.iataCode}"//題名のセット
                         navController.navigate(BusScheduleScreens.AirportListScreen.name)
                     }
                 )
             }
 
             composable("FavoriteListScreen") {
+                topAppBarTitle = "Favorite Airport List"
+                viewModel.updateFavoriteAirport()//更新
+                val uiState = viewModel.searchUiState.collectAsState().value
                 val favoriteList by viewModel.getFullSchedule().collectAsState(emptyList())
+                val departureAirport = uiState.favoriteDepartureAirport
+                val destinationAirport = uiState.favoriteDestinationAirport
+//                val selectedAirport by viewModel.selectedAirport.collectAsState()
                 Log.d(TAG, "BusScheduleApp: favoriteList: ${favoriteList.size}")
                 FavoriteListScreen(
                     stateTitle = "Favorite Airports",
                     listFavorite = favoriteList,
+                    departureAirport = departureAirport,
+                    destinationAirport = destinationAirport,
                     onGetAirportByIataCode = { iataCode ->//iatacodeを元にairport_tableから情報を取得する
                         var airport: Airport? = null
                         viewModel.viewModelScope.launch {
@@ -173,6 +200,7 @@ fun BusScheduleApp(
                                 airport = result
                             }
                         }
+//                        Log.d(TAG, "BusScheduleApp: airport: ${airport?.iataCode}")
                         airport
                     },
                     contentPadding = innerPadding
@@ -182,12 +210,29 @@ fun BusScheduleApp(
     }
 }
 
+@Composable
+fun StarIcon(
+    onClick: () -> Unit // タップ時の処理
+) {
+    var isSelected by remember { mutableStateOf(false) } // 状態を保持
+    IconButton(onClick = {
+        isSelected = !isSelected
+        onClick()
+    }) {
+        Icon(
+            imageVector = if (isSelected) Icons.Filled.Star else Icons.Outlined.Star,
+            contentDescription = if (isSelected) "Selected Star" else "Unselected Star",
+            tint = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+        )
+    }
+}
 
 @Composable
 fun AirportListScreen(
     stateTitle: String,
     selectedAirport: Airport,//選択された空港を入れるviewmodelの中のuiStateか変数で
     listAirport: List<Airport>,//選択された空港以外の空港リスト
+//    onExist : ((String, String) -> Unit)? = null,
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp),
     onRegisterFavoriteAirportClick: ((String, String) -> Unit)? = null//favoriteに登録トリガー
@@ -203,56 +248,78 @@ fun AirportListScreen(
             items = listAirport,
             key = { airport -> airport.id }
         ) { airport ->
+//            val isSelected = false
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(dimensionResource(R.dimen.padding_medium))
                     .clickable(enabled = onRegisterFavoriteAirportClick != null) {
-                        onRegisterFavoriteAirportClick?.invoke(airport.iataCode, selectedAirport.iataCode)//タップすると登録される
+                        onRegisterFavoriteAirportClick?.invoke(selectedAirport.iataCode, airport.iataCode)//タップすると登録される
+                        Log.d(TAG, "AirportListScreen: tap!!!!")
                     }
             ) {
-                Column(
-                    modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
-                ) {
-                    Text(
-                        text = "Depart",
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
+                Row (
+                    modifier = Modifier
+                        .fillMaxWidth()
+//                        .padding(dimensionResource(R.dimen.padding_medium)),
+//                    horizontalArrangement = Arrangement.SpaceBetween
+                ){
+                    Column(
+                        modifier = Modifier.padding(dimensionResource(R.dimen.padding_medium))
                     ) {
                         Text(
-                            text = selectedAirport.iataCode,
-                            style = MaterialTheme.typography.bodyLarge
+                            text = "Depart",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontWeight = FontWeight.Bold
+                            )
                         )
-                        Text(
-                            text = selectedAirport.name,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = selectedAirport.iataCode,
+                                style = MaterialTheme.typography.bodyLarge.copy(),
+                                textAlign = TextAlign.Left
+                            )
+                            Spacer(modifier.weight(0.1f))
+                            Text(
+                                text = selectedAirport.name,
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
 
-                    Text(
-                        text = "Arrive",
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
                         Text(
-                            text = airport.iataCode,
-                            style = MaterialTheme.typography.bodyLarge
+                            text = "Arrive",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontWeight = FontWeight.Bold
+                            )
                         )
-                        Text(
-                            text = airport.name,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = airport.iataCode,
+                                style = MaterialTheme.typography.bodyLarge.copy(),
+                                textAlign = TextAlign.Left
+                            )
+                            Spacer(modifier.weight(0.1f))
+                            Text(
+                                text = airport.name,
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier.weight(1f)
+                            )
+                        }
                     }
+//                    StarIcon(
+//                        onClick = {
+//                            onRegisterFavoriteAirportClick?.invoke(
+//                                selectedAirport.iataCode,
+//                                airport.iataCode)//タップすると登録される
+//                        } // タップ時の処理を実行
+//                    )
                 }
             }
         }
@@ -263,6 +330,8 @@ fun AirportListScreen(
 fun FavoriteListScreen(
     stateTitle: String,
     listFavorite: List<BusSchedule>, // favorite空港リスト
+    departureAirport: List<Airport>, // 出発地の空港リスト
+    destinationAirport: List<Airport>, // 到着地の空港リスト
     onGetAirportByIataCode: (String) -> Airport?, // iataCodeからAirportを取得する関数
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
@@ -274,15 +343,14 @@ fun FavoriteListScreen(
         contentPadding = contentPadding,
     ) {
         items(
-            items = listFavorite,
-            key = { favorite -> favorite.id }
-        ) { favorite ->
-            val departureAirport = onGetAirportByIataCode(favorite.departureCode) // 出発地の空港情報を取得
-            val arrivalAirport = onGetAirportByIataCode(favorite.destinationCode) // 到着地の空港情報を取得
-            Log.d(TAG, "FavoriteListScreen: departureAirport: ${departureAirport?.iataCode}")
-            Log.d(TAG, "FavoriteListScreen: arrivalAirport: ${arrivalAirport?.iataCode}")
+            items = listFavorite.zip(departureAirport.zip(destinationAirport)) { favorite, (departure, destination) ->
+                Triple(favorite, departure, destination)
+            },
+            key = { (favorite, _, _) -> favorite.id }
+        ) { (favorite, departure, destination)  ->
+            // 空港情報を保持するState
 
-            if (departureAirport != null && arrivalAirport != null) {
+            if (departure != null && destination != null) {
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -302,12 +370,15 @@ fun FavoriteListScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "$departureAirport.iataCode",
-                                style = MaterialTheme.typography.bodyLarge
+                                text = departure.iataCode,
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Left
                             )
+                            Spacer(modifier.weight(0.1f))
                             Text(
-                                text = "$departureAirport.name",
-                                style = MaterialTheme.typography.bodyLarge
+                                text = departure.name,
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = Modifier.weight(1f)
                             )
                         }
 
@@ -322,12 +393,15 @@ fun FavoriteListScreen(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "$arrivalAirport.iataCode",
-                                style = MaterialTheme.typography.bodyLarge
+                                text = destination.iataCode,
+                                style = MaterialTheme.typography.bodyLarge,
+                                textAlign = TextAlign.Left
                             )
+                            Spacer(modifier.weight(0.1f))
                             Text(
-                                text = "$arrivalAirport.name",
-                                style = MaterialTheme.typography.bodyLarge
+                                text = destination.name,
+                                style = MaterialTheme.typography.bodyLarge,
+                                modifier = modifier.weight(1f)
                             )
                         }
                     }
@@ -347,11 +421,13 @@ fun AirportDetails(
     onAirportClick: ((Airport) -> Unit)? = null,
 //    navController: NavController
 ) {
+
     StateTitle(stateTitle)
     LazyColumn(
         modifier = modifier,
         contentPadding = contentPadding,
     ) {
+
         items(
             items = airports,
             key = { airport -> airport.id }
@@ -363,7 +439,7 @@ fun AirportDetails(
                         onAirportClick?.invoke(airport)
                     }
                     .padding(dimensionResource(R.dimen.padding_medium)),
-                horizontalArrangement = Arrangement.SpaceBetween
+//                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     text = airport.iataCode,
@@ -371,15 +447,18 @@ fun AirportDetails(
                         fontSize = dimensionResource(R.dimen.font_large).value.sp,
                         fontWeight = FontWeight(300)
                     ),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier/*.weight(1f)*/,
+                    textAlign = TextAlign.Left
                 )
+//                Spacer(modifier.padding(horizontal = 16.dp))
+                Spacer(modifier.weight(0.1f))
                 Text(
                     text = airport.name,
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontSize = dimensionResource(R.dimen.font_large).value.sp,
                         fontWeight = FontWeight(300)
                     ),
-                    modifier = Modifier.weight(2f)
+                    modifier = Modifier.weight(1f)
                 )
             }
         }
@@ -405,11 +484,13 @@ fun StateTitle(title: String){
 fun BusScheduleTopAppBar(
     title: String,
     fixedTitle : String,
+    searchText: String,
     onSearchTextChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
-    var searchText by remember { mutableStateOf("") }//検索バーの文字列を保持する変数
+//    var searchText by remember { mutableStateOf(searchText) }//検索バーの文字列を保持する変数
+    var searchText = searchText
     LaunchedEffect(searchText) {
         if (searchText.isEmpty()){
             navController.navigate(BusScheduleScreens.FavoriteListScreen.name)
@@ -420,7 +501,8 @@ fun BusScheduleTopAppBar(
     Column(modifier = modifier) {
         TopAppBar(
             title = { Text(fixedTitle) },
-            modifier = modifier.background(MaterialTheme.colorScheme.primaryContainer)
+            modifier = modifier
+                .background(MaterialTheme.colorScheme.onSecondary)
         )
         Row(
             modifier = Modifier
@@ -440,6 +522,19 @@ fun BusScheduleTopAppBar(
             )
 //    }
         }
+        Text(
+            text = title,
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontSize = dimensionResource(R.dimen.font_large).value.sp,
+                fontWeight = FontWeight(300)
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(dimensionResource(R.dimen.padding_medium)),
+            textAlign = TextAlign.Left
+        )
+
     }
 }
 
@@ -453,7 +548,9 @@ fun BusScheduleTopAppBarPreview() {
             title = "Sample Title",
             fixedTitle = "Fixed Title",
             onSearchTextChange = { /* 検索テキスト変更時の処理 */ },
-            navController = rememberNavController()
+            navController = rememberNavController(),
+            modifier = Modifier.padding(16.dp),
+            searchText = "Sample Search Text"
         )
     }
 }

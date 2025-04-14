@@ -37,4 +37,14 @@ interface BusScheduleDao {
         """
     )
     fun getAll(): Flow<List<BusSchedule>>
+
+    @Query(
+        """
+        SELECT EXISTS(
+            SELECT 1 FROM favorite 
+            WHERE departure_code = :departure AND destination_code = :destination
+        )
+        """
+    )
+    fun existsByDepartureAndDestination(departure: String, destination: String): Flow<Boolean>
 }

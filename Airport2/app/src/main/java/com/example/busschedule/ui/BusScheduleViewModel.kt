@@ -15,6 +15,7 @@
  */
 package com.example.busschedule.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
@@ -29,9 +30,15 @@ import com.example.busschedule.data.bus.BusSchedule
 import com.example.busschedule.data.bus.BusScheduleDao
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 
@@ -42,6 +49,16 @@ class BusScheduleViewModel(private val busScheduleDao: BusScheduleDao, private v
     private val _searchUiState = MutableStateFlow(DefaultState())
     val searchUiState: StateFlow<DefaultState> = _searchUiState.asStateFlow()
 
+//    val selectedAirport: StateFlow<Airport?> =
+//        getIataAirport().stateIn(
+//            scope = viewModelScope,
+//            started = SharingStarted.WhileSubscribed(TIMEOUT_MILLIS),
+//            initialValue = null
+//        )
+
+//    private fun getIataAirport(): Flow<Airport?> {
+//        return getIataAirport().map { it }
+//    }
 
     //入力状態のテキストのUiStateを更新する
     fun updateSearchText(text: String) {
@@ -58,15 +75,63 @@ class BusScheduleViewModel(private val busScheduleDao: BusScheduleDao, private v
             _searchUiState.value = _searchUiState.value.copy(listAirport = updateList)
         }
     }
+
+    fun updateFavoriteAirport() {
+        viewModelScope.launch {
+            // `getFullSchedule`で取得したリストを処理
+            val schedules = getFullSchedule().first()
+
+            // 空港情報を格納するリスト
+            val departureAirports = mutableListOf<Airport>()
+            val destinationAirports = mutableListOf<Airport>()
+
+            // 各スケジュールのdepartureとdestinationを参照して空港情報を取得
+            schedules.forEach { schedule ->
+                val departureAirport = getIataAirport(schedule.departureCode).firstOrNull()
+                val destinationAirport = getIataAirport(schedule.destinationCode).firstOrNull()
+
+                // 取得した空港情報をリストに追加
+                if (departureAirport != null) {
+                    departureAirports.add(departureAirport)
+                }
+                if (destinationAirport != null) {
+                    destinationAirports.add(destinationAirport)
+                }
+            }
+
+            // Stateを更新
+            _searchUiState.value = _searchUiState.value.copy(
+                favoriteDepartureAirport = departureAirports,
+                favoriteDestinationAirport = destinationAirports
+            )
+        }
+    }
     suspend fun insertFavoriteAirport(departure: String, destination: String) {
-        busScheduleDao.insert(busSchedule = BusSchedule(departureCode = departure, destinationCode = destination))
+        try {
+            busScheduleDao.insert(busSchedule = BusSchedule(departureCode = departure, destinationCode = destination))
+            Log.d(TAG, "insertFavoriteAirport: $departure, $destination")
+        } catch (
+            e: Exception) {
+            Log.e("BusScheduleViewModel", "Error inserting favorite airport", e)
+        }
+//        busScheduleDao.insert(busSchedule = BusSchedule(departureCode = departure, destinationCode = destination))
+//        Log.d(TAG, "insertFavoriteAirport: $departure, $destination")
     }
 
     //favorite
     fun getFullSchedule(): Flow<List<BusSchedule>> = busScheduleDao.getAll()
-    suspend fun insertSchedule(busSchedule: BusSchedule) = busScheduleDao.insert(busSchedule)
-    suspend fun deleteSchedule(busSchedule: BusSchedule) = busScheduleDao.delete(busSchedule)
-    suspend fun updateSchedule(busSchedule: BusSchedule) = busScheduleDao.update(busSchedule)
+//    fun getFullSchedule(): Flow<List<BusSchedule>> = flow {
+//        try {
+//            busScheduleDao.getAll()
+//        } catch (e: Exception) {
+//            Log.e("BusScheduleViewModel", "Error fetching full schedule", e)
+//        }
+//    }
+    fun existsByFavorite(departure: String, destination: String): Flow<Boolean> =
+        busScheduleDao.existsByDepartureAndDestination(departure = departure, destination = destination)
+//    suspend fun insertSchedule(busSchedule: BusSchedule) = busScheduleDao.insert(busSchedule)
+//    suspend fun deleteSchedule(busSchedule: BusSchedule) = busScheduleDao.delete(busSchedule)
+//    suspend fun updateSchedule(busSchedule: BusSchedule) = busScheduleDao.update(busSchedule)
 
     //Airport
     fun getSearchAirports(keyword: String): Flow<List<Airport>> = airportDao.getSearch(keyword = keyword)
@@ -74,6 +139,7 @@ class BusScheduleViewModel(private val busScheduleDao: BusScheduleDao, private v
     fun getExcludeAirport(iata: String): Flow<List<Airport>> = airportDao.getAirportsExcluding(iataCode = iata)
 
     companion object {
+        private const val TIMEOUT_MILLIS = 5_000L
         val factory : ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as BusScheduleApplication)
@@ -86,7 +152,9 @@ class BusScheduleViewModel(private val busScheduleDao: BusScheduleDao, private v
 data class DefaultState(
     val textSearch: String = "",
     val selectedAirport: Airport? = null, // 選択された空港
-    val listAirport: List<Airport> = emptyList() // 空港リスト
+    val listAirport: List<Airport> = emptyList(), // 空港リスト
+    val favoriteDepartureAirport: List<Airport> = emptyList(), // 空港リスト
+    val favoriteDestinationAirport: List<Airport> = emptyList(),
 )
 
 
