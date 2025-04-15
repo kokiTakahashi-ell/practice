@@ -1,0 +1,6 @@
+com.example.inventory.test.app-annotation-experimental-1.3.0-0 /Users/k-takahashi/.gradle/caches/transforms-3/0e5188bab855706fe8026861669d1f0a/transformed/annotation-experimental-1.3.0/res
+com.example.inventory.test.app-core-1.5.0-1 /Users/k-takahashi/.gradle/caches/transforms-3/2f623238a8e335fb7e57c26ce2855f28/transformed/core-1.5.0/res
+com.example.inventory.test.app-androidTest-2 /Users/k-takahashi/practice/basic-android-kotlin-compose-training-inventory-app-room/app/build/generated/res/resValues/androidTest/debug
+com.example.inventory.test.app-mergeDebugAndroidTestResources-3 /Users/k-takahashi/practice/basic-android-kotlin-compose-training-inventory-app-room/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
+com.example.inventory.test.app-mergeDebugAndroidTestResources-4 /Users/k-takahashi/practice/basic-android-kotlin-compose-training-inventory-app-room/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
+com.example.inventory.test.app-merged_res-5 /Users/k-takahashi/practice/basic-android-kotlin-compose-training-inventory-app-room/app/build/intermediates/merged_res/debugAndroidTest

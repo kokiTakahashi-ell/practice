@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<testsuite name=".WorkerInstrumentationTest" tests="1" failures="0" errors="0" skipped="0" time="3.762" timestamp="2025-04-15T01:57:01" hostname="localhost">
+  <properties>
+    <property name="device" value="Medium_Phone_API_36(AVD) - 16" />
+    <property name="flavor" value="" />
+    <property name="project" value=":app" />
+  </properties>
+  <testcase name="saveImageToFileWorker_doWork_resultSuccessReturnsUrl" classname=".WorkerInstrumentationTest" time="3.094" />
+</testsuite>

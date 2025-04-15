@@ -1,0 +1,88 @@
+04-15 10:56:55.729 22062 22079 I TestRunner: started: saveImageToFileWorker_doWork_resultSuccessReturnsUrl(WorkerInstrumentationTest)
+04-15 10:56:55.746  6507  6526 I .apps.wellbeing: AssetManager2(0xb400007124059978) locale list changing from [] to [en-US]
+04-15 10:56:55.747 22062 22080 D WM-PackageManagerHelper: Skipping component enablement for androidx.work.impl.background.systemalarm.RescheduleReceiver
+04-15 10:56:55.753  6507  6526 I .apps.wellbeing: AssetManager2(0xb40000712405b8b8) locale list changing from [] to [en-US]
+04-15 10:56:55.755  6507  6526 I .apps.wellbeing: AssetManager2(0xb40000712405ac38) locale list changing from [] to [en-US]
+04-15 10:56:55.757  6507  6526 I .apps.wellbeing: AssetManager2(0xb400007124056db8) locale list changing from [] to [en-US]
+04-15 10:56:55.759  6507  6526 I .apps.wellbeing: AssetManager2(0xb400007124056778) locale list changing from [] to [en-US]
+04-15 10:56:55.763  6507  6526 I .apps.wellbeing: AssetManager2(0xb40000712405ce98) locale list changing from [] to [en-US]
+04-15 10:56:56.437 18584 21993 I GmscoreIpa: Starting mediastore instant index [CONTEXT service_id=255 ]
+04-15 10:56:56.634   617   776 I RoleService: Granting default roles...
+04-15 10:56:56.643  1270  1270 D CarrierSvcBindHelper: onPackageModified: com.example.bluromatic
+04-15 10:56:56.645  1270  1270 D CarrierSvcBindHelper: No carrier app for: 0
+04-15 10:56:56.646 20878 20878 D ControlsListingControllerImpl: ServiceConfig reloaded, count: 0
+04-15 10:56:56.648   617   664 I system_server: AssetManager2(0xb400007124094c58) locale list changing from [] to [en-US]
+04-15 10:56:56.650   617  1225 W SignedPackage: Package doesn't have required signing certificate: com.google.android.retaildemo
+04-15 10:56:56.652  1095  2938 I PermissionControllerServiceImpl: Updating user sensitive for uid 10223
+04-15 10:56:56.654  1270  1270 E SmsApplication: com.google.android.apps.messaging lost android:read_cell_broadcasts:  (fixing)
+04-15 10:56:56.657   617  1225 E RoleControllerServiceImpl: Default/fallback role holder package doesn't qualify for the role, package: com.google.android.gms.supervision, role: android.app.role.SYSTEM_SUPERVISION
+04-15 10:56:56.660   617   793 I system_server: AssetManager2(0xb4000071240b01d8) locale list changing from [] to [en-US]
+04-15 10:56:56.661  1270  1511 D ImsResolver: maybeAddedImsService, packageName: com.example.bluromatic
+04-15 10:56:56.661  1270  1511 V ImsResolver: searchForImsServices: package=com.example.bluromatic, users=[UserHandle{0}]
+04-15 10:56:56.661  1270  1511 V ImsResolver: searchForImsServices: package=com.example.bluromatic, users=[UserHandle{0}]
+04-15 10:56:56.663  1270  1270 E SmsApplication: com.google.android.apps.messaging lost android:read_cell_broadcasts:  (fixing)
+04-15 10:56:56.663   617  1225 W SignedPackage: Package doesn't have required signing certificate: com.google.android.apps.work.clouddpc
+04-15 10:56:56.676   617  1225 E RoleControllerServiceImpl: Default/fallback role holder package doesn't qualify for the role, package: com.google.android.gms, role: android.app.role.WALLET
+04-15 10:56:56.680   617  1225 I system_server: AssetManager2(0xb400007124098ad8) locale list changing from [] to [en-US]
+04-15 10:56:56.681   617   793 I system_server: AssetManager2(0xb4000071240e1878) locale list changing from [] to [en-US]
+04-15 10:56:56.682   617  1225 W SignedPackage: Cannot get ApplicationInfo for package: com.google.android.devicelockcontroller
+04-15 10:56:56.689   617   617 W IPCThreadState: Sending oneway calls to frozen process.
+04-15 10:56:56.689   617   617 W IPCThreadState: Sending oneway calls to frozen process.
+04-15 10:56:56.689   617   617 W IPCThreadState: Sending oneway calls to frozen process.
+04-15 10:56:56.689   617   617 W IPCThreadState: Sending oneway calls to frozen process.
+04-15 10:56:56.697   617   670 I system_server: AssetManager2(0xb4000071240e69b8) locale list changing from [] to [en-US]
+04-15 10:56:56.712   617   670 I system_server: AssetManager2(0xb4000071240f7358) locale list changing from [] to [en-US]
+04-15 10:56:56.715   617   670 I system_server: AssetManager2(0xb4000071240fa878) locale list changing from [] to [en-US]
+04-15 10:56:56.716   617   670 I system_server: AssetManager2(0xb400007124099438) locale list changing from [] to [en-US]
+04-15 10:56:56.721  1353  1377 D PackageUpdatedTask: Package updated: mOp=UPDATE packages=[com.example.bluromatic], user=UserHandle{0}
+04-15 10:56:56.722  1759 21424 I AiAiEcho: AppIndexer Package:[com.example.bluromatic] UserProfile:[0] Enabled:[true].
+04-15 10:56:56.723  1759 21424 I AiAiEcho: AppFetcherImplV2 updateApps package:[com.example.bluromatic], userId:[0], reason:[package is updated.].
+04-15 10:56:56.738  1353  1377 W HWUI    : Image decoding logging dropped!
+04-15 10:56:56.738  1353  1377 D AlphabeticIndexCompat: computeSectionName: cs: Blur-O-Matic sectionName: B
+04-15 10:56:56.740  1353  1353 D StatsLog: LAUNCHER_ALLAPPS_COUNT
+04-15 10:56:56.740  1353  1353 D AlphabeticalAppsList: Clearing FastScrollerSections.
+04-15 10:56:56.740  1353  1353 D AlphabeticalAppsList: Adding apps with sections. HasPrivateApps: false
+04-15 10:56:56.740  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: A with appInfoTitle: Amphibians
+04-15 10:56:56.740  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: B with appInfoTitle: Blur-O-Matic
+04-15 10:56:56.740  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: C with appInfoTitle: Calendar
+04-15 10:56:56.740  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: D with appInfoTitle: Drive
+04-15 10:56:56.740  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: F with appInfoTitle: Files
+04-15 10:56:56.740  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: G with appInfoTitle: Gmail
+04-15 10:56:56.740  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: L with appInfoTitle: Lunch Tray
+04-15 10:56:56.740  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: M with appInfoTitle: Maps
+04-15 10:56:56.740  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: P with appInfoTitle: Phone
+04-15 10:56:56.740  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: R with appInfoTitle: Reply
+04-15 10:56:56.740  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: S with appInfoTitle: Safety
+04-15 10:56:56.740  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: T with appInfoTitle: TMoble
+04-15 10:56:56.740  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: Y with appInfoTitle: YouTube
+04-15 10:56:56.740  1353  1353 D AlphabeticalAppsList: Adding FastScrollSection duplicate to scroll to the bottom.
+04-15 10:56:56.741  1353  1353 D AlphabeticalAppsList: Clearing FastScrollerSections.
+04-15 10:56:56.741  1353  1353 D AlphabeticalAppsList: Adding apps with sections. HasPrivateApps: false
+04-15 10:56:56.741  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: A with appInfoTitle: Amphibians
+04-15 10:56:56.741  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: B with appInfoTitle: Blur-O-Matic
+04-15 10:56:56.741  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: C with appInfoTitle: Calendar
+04-15 10:56:56.741  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: D with appInfoTitle: Drive
+04-15 10:56:56.741  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: F with appInfoTitle: Files
+04-15 10:56:56.741  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: G with appInfoTitle: Gmail
+04-15 10:56:56.741  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: L with appInfoTitle: Lunch Tray
+04-15 10:56:56.741  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: M with appInfoTitle: Maps
+04-15 10:56:56.741  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: P with appInfoTitle: Phone
+04-15 10:56:56.741  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: R with appInfoTitle: Reply
+04-15 10:56:56.741  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: S with appInfoTitle: Safety
+04-15 10:56:56.741  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: T with appInfoTitle: TMoble
+04-15 10:56:56.741  1353  1353 D AlphabeticalAppsList: addAppsWithSections: adding sectionName: Y with appInfoTitle: YouTube
+04-15 10:56:56.741  1353  1353 D AlphabeticalAppsList: Adding FastScrollSection duplicate to scroll to the bottom.
+04-15 10:56:56.744  1353  1353 D b/387844520: getOutlineOffsetX: measured width = 173, mNormalizedIconSize = 159, last updated width = 173
+04-15 10:56:58.763 22062 22084 W HWUI    : Image decoding logging dropped!
+04-15 10:56:58.770  1757  9361 W MediaProvider: isAppCloneUserPair for user 0: false
+04-15 10:56:58.775  1757  1856 V MediaProvider: Created relation b/w 2 and com.example.bluromatic::0
+04-15 10:56:58.779  1757  1782 I MediaProvider: Open with lower FS for /storage/emulated/0/Pictures/.pending-1745287018-Blurred Image.jpg. Uid: 10223
+04-15 10:56:58.818  1757  1782 D MediaProvider: Moving /storage/emulated/0/Pictures/.pending-1745287018-Blurred Image.jpg to /storage/emulated/0/Pictures/Blurred Image (3).jpg
+04-15 10:56:58.830  6072  6197 I UriTaskContentObserver: (REDACTED) Throttling content uri change event for %s
+04-15 10:56:58.831  1757  1920 D WM-SystemJobScheduler: Scheduling work ID 29a156d6-1aae-4605-a269-d3bfa3eb9232Job ID 7
+04-15 10:56:58.833  1757  1920 D WM-GreedyScheduler: Ignoring {WorkSpec: 9d991301-f48e-47f0-b150-aa8360d5dfab}. Requires device idle.
+04-15 10:56:58.833  1757  1920 D WM-GreedyScheduler: Ignoring {WorkSpec: 8afb702b-fd04-402e-a153-89d4642520da}. Requires device idle.
+04-15 10:56:58.833  1757  1920 D WM-GreedyScheduler: Ignoring {WorkSpec: 3e99d0ac-c560-4806-9416-f0d95a2291c2}. Requires device idle.
+04-15 10:56:58.836  1757  1856 V MediaProvider: Deleted backup of old file path: /storage/emulated/0/Pictures/.pending-1745287018-Blurred Image.jpg
+04-15 10:56:58.841  6072  6197 I UriTaskContentObserver: (REDACTED) Throttling content uri change event for %s
+04-15 10:56:58.842 22062 22079 I TestRunner: finished: saveImageToFileWorker_doWork_resultSuccessReturnsUrl(WorkerInstrumentationTest)

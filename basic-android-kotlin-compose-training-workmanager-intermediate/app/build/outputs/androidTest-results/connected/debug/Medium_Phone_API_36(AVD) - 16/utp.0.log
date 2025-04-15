@@ -1,0 +1,43 @@
+情報: Constructing runner from config.
+情報: Configuring Android Instrumentation driver: android_instrumentation_runtime {
+  instrumentation_info {
+    app_package: "com.example.bluromatic"
+    test_package: "com.example.bluromatic.test"
+    test_runner_class: "androidx.test.runner.AndroidJUnitRunner"
+  }
+  instrumentation_args {
+    args_map {
+      key: "additionalTestOutputDir"
+      value: "/sdcard/Android/media/com.example.bluromatic/additional_test_output"
+    }
+    args_map {
+      key: "class"
+      value: "WorkerInstrumentationTest#saveImageToFileWorker_doWork_resultSuccessReturnsUrl"
+    }
+  }
+}
+am_instrument_timeout: 31536000
+
+情報: Configuring AndroidTestApkInstallerPlugin: apks_to_install {
+  apk_paths: "/Users/k-takahashi/practice/basic-android-kotlin-compose-training-workmanager-intermediate/app/build/intermediates/apk/debug/app-debug.apk"
+  install_options {
+  }
+  uninstall_after_test: true
+}
+apks_to_install {
+  apk_paths: "/Users/k-takahashi/practice/basic-android-kotlin-compose-training-workmanager-intermediate/app/build/intermediates/apk/androidTest/debug/app-debug-androidTest.apk"
+  install_options {
+  }
+  uninstall_after_test: true
+}
+
+情報: No installables found in test fixture. Nothing to install.
+情報: Installing [/Users/k-takahashi/practice/basic-android-kotlin-compose-training-workmanager-intermediate/app/build/intermediates/apk/debug/app-debug.apk] on device emulator-5554.
+情報: Installing [/Users/k-takahashi/practice/basic-android-kotlin-compose-training-workmanager-intermediate/app/build/intermediates/apk/androidTest/debug/app-debug-androidTest.apk] on device emulator-5554.
+情報: Start logcat streaming.
+情報: Running Android Instrumentation driver.
+情報: Copying files from device to host: /sdcard/Android/media/com.example.bluromatic/additional_test_output to /Users/k-takahashi/practice/basic-android-kotlin-compose-training-workmanager-intermediate/app/build/outputs/connected_android_test_additional_output/debugAndroidTest/connected/Medium_Phone_API_36(AVD) - 16
+情報: Stop logcat streaming.
+情報: Uninstalling com.example.bluromatic for device emulator-5554.
+情報: Uninstalling com.example.bluromatic.test for device emulator-5554.
+情報: Execute .WorkerInstrumentationTest.saveImageToFileWorker_doWork_resultSuccessReturnsUrl: PASSED
