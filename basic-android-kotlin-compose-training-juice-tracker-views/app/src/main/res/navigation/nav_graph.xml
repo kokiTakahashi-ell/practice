@@ -31,10 +31,10 @@
         android:id="@+id/entryDialogFragment"
         android:name="com.example.juicetracker.EntryDialogFragment"
         android:label="fragment_entry_dialog"
-        tools:layout="@layout/fragment_entry_dialog" >
+        tools:layout="@layout/fragment_entry_dialog">
         <argument
             android:name="itemId"
-            android:defaultValue="0L"
-            app:argType="long" />
+            app:argType="long"
+            android:defaultValue="0L" />
     </dialog>
 </navigation>
