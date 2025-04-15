@@ -36,6 +36,7 @@ import com.example.bluromatic.workers.SaveImageToFileWorker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.mapNotNull
+import androidx.work.Constraints
 
 class WorkManagerBluromaticRepository(context: Context) : BluromaticRepository {
 
@@ -50,6 +51,10 @@ class WorkManagerBluromaticRepository(context: Context) : BluromaticRepository {
      * @param blurLevel The amount to blur the image
      */
     override fun applyBlur(blurLevel: Int) {
+
+        val constraints = Constraints.Builder()
+            .setRequiresBatteryNotLow(true)
+            .build()
         // Add WorkRequest to Cleanup temporary images
         var continuation = workManager
             .beginUniqueWork(
@@ -63,6 +68,8 @@ class WorkManagerBluromaticRepository(context: Context) : BluromaticRepository {
 
         // Input the Uri for the blur operation along with the blur level
         blurBuilder.setInputData(createInputDataForWorkRequest(blurLevel, imageUri))
+        //バッテリー制約を処理リクエストに追加
+        blurBuilder.setConstraints(constraints)
 
         continuation = continuation.then(blurBuilder.build())
 
