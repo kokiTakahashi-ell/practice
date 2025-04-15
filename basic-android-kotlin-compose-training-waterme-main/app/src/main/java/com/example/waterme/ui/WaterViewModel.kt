@@ -33,6 +33,9 @@ class WaterViewModel(private val waterRepository: WaterRepository) : ViewModel()
         waterRepository.scheduleReminder(reminder.duration, reminder.unit, reminder.plantName)
     }
 
+    /**
+     * Factory for [WaterViewModel] that takes [WaterRepository] as a dependency
+     */
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
