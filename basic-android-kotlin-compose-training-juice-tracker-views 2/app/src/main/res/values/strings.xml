@@ -31,8 +31,8 @@
     <string name="yellow">Yellow</string>
     <string name="magenta">Magenta</string>
 
-    <plural name="number_of_stars">
+    <plurals name="number_of_stars">
         <item quantity="one">%d star</item>
         <item quantity="other">%d stars</item>
-    </plural>
+    </plurals>
 </resources>

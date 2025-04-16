@@ -17,6 +17,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("org.jetbrains.kotlin.plugin.compose") version "2.0.0"
     id("androidx.navigation.safeargs.kotlin")
     id("com.google.devtools.ksp") version "2.1.20-2.0.0"
 }
