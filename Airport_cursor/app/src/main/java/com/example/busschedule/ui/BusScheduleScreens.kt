@@ -367,15 +367,15 @@ fun FavoriteListScreen(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues = PaddingValues(0.dp)
 ) {
-    // 再コンポーズの回数を追跡するためのカウンター
-    val recompositionCount = remember { mutableStateOf(0) }
-    recompositionCount.value++
+//    // 再コンポーズの回数を追跡するためのカウンター
+//    val recompositionCount = remember { mutableStateOf(0) }
+//    recompositionCount.value++
     
     // 再コンポーズの回数をログに出力
-    LaunchedEffect(Unit) {
-        Log.d("Recomposition", "FavoriteListScreen recomposed ${recompositionCount.value} times")
-    }
-    
+//    LaunchedEffect(Unit) {
+//        Log.d("Recomposition", "FavoriteListScreen recomposed ${recompositionCount.value} times")
+//    }
+//    Log.d("Recomposition", "FavoriteListScreen recomposed ${recompositionCount.value} times")
     Log.d(TAG, "FavoriteListScreen: listFavorite: ${listFavorite.size}")
     StateTitle(stateTitle)
     LazyColumn(
@@ -529,12 +529,12 @@ fun BusScheduleTopAppBar(
     navController: NavController
 ) {
     // 再コンポーズの回数を追跡するためのカウンター
-    val recompositionCount = remember { mutableStateOf(0) }
-    recompositionCount.value++
+//    val recompositionCount = remember { mutableStateOf(0) }
+//    recompositionCount.value++
     
     // 再コンポーズの回数をログに出力
     LaunchedEffect(Unit) {
-        Log.d("Recomposition", "BusScheduleTopAppBar recomposed ${recompositionCount.value} times")
+//        Log.d("Recomposition", "BusScheduleTopAppBar recomposed ${recompositionCount.value} times")
     }
     
     var searchText = searchText
